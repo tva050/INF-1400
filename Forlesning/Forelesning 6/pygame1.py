@@ -24,11 +24,11 @@ while True:
         break
     
     screen.blit(background, (0, 0))
-    if event.type == pygame.MOUSEMOTION:
+    """ if event.type == pygame.MOUSEMOTION:
         ball_center_x = pygame.mouse.get_pos()[0] - ball.get_width() / 2
         ball_center_y = pygame.mouse.get_pos()[1] - ball.get_height() / 2
         
-        screen.blit(ball, (ball_center_x, ball_center_y))
+        screen.blit(ball, (ball_center_x, ball_center_y)) """
     pygame.display.update()
     
 print("Finished exection")
