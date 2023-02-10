@@ -1,4 +1,6 @@
 import pygame as pg
+import random
+import time
 
 SCREEN_X = 800
 SCREEN_Y = 600
@@ -16,6 +18,8 @@ background = pg.transform.scale(background, (SCREEN_X, SCREEN_Y)).convert()
 boids = pg.image.load(BOIDS_FILE)
 hoiks = pg.image.load(HOIKS_FILE)
 
+#
+
 class Drawable:
     
     def __init__(self, x, y, img):
@@ -32,13 +36,20 @@ class Drawable:
 
 class Boids(Drawable):
     
-    def __init__(self, x, y, img, speed):
+    def __init__(self, x, y, speed):
         super().__init__(x, y, boids)
         self.speed = speed
 
-#class Hoiks(Drawable):
+class Hoiks(Drawable):
+    
+    def __init__(self, x, y, speed):
+        super().__init__(x, y, hoiks)
+        self.speed = speed
 
-#class Obstacles(Drawable):    
+class Obstacles(Drawable):
+    
+    def __init__(self, x, y, img):
+        super().__init__(x, y, img)  
 
 while True:
     
