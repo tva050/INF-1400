@@ -33,6 +33,7 @@ class Drawable:
         self.move() 
         screen.blit(self.img, (self.x,self.y))
  # subklasse av Drawable som har en speed variabel
+
 class Fish(Drawable):
     
     def __init__(self, x, y, img, speed):
