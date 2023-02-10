@@ -5,7 +5,8 @@ import time
 SCREEN_X = 800
 SCREEN_Y = 600
 BOIDS_FILE = "Mandetory 2\Figures\Boids.png"
-HOIKS_FILE = "Mandetory 2\Figures\Predator.png"
+HOIKS_FILE = "Mandetory 2\Figures\predator.png"
+OBSTICALS_FILE = "Mandetory 2\Figures\obsticals.png"
 BG_FILE = "Mandetory 2\Figures\sky_bg.png"
 
 pg.init()
@@ -17,9 +18,10 @@ background = pg.transform.scale(background, (SCREEN_X, SCREEN_Y)).convert()
 
 boids = pg.image.load(BOIDS_FILE)
 hoiks = pg.image.load(HOIKS_FILE)
+obstacles = pg.image.load(OBSTICALS_FILE)
 
-#
 
+# Class for all objects that can be drawn on the screen
 class Drawable:
     
     def __init__(self, x, y, img):
@@ -34,11 +36,22 @@ class Drawable:
         self.move()
         screen.blit(self.img, (self.x, self.y))
 
+# Class for Boids which is a subclass of Drawable and has a speed variable
 class Boids(Drawable):
     
     def __init__(self, x, y, speed):
         super().__init__(x, y, boids)
         self.speed = speed
+    
+    def separation(self):
+        pass
+    
+    def alignment(self):
+        pass
+    
+    def cohesion(self):
+        pass
+    
 
 class Hoiks(Drawable):
     
