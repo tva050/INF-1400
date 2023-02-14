@@ -6,7 +6,6 @@ import time
 
 SCREEN_X = 800
 SCREEN_Y = 600
-#BOIDS_FILE = r"Mandetory 2\Figures\fugu.png"
 BOID_FILE = "Mandetory 2\Figures\Boids.png"
 HOIK_FILE = "Mandetory 2\Figures\predator.png"
 OBSTICALS_FILE = "Mandetory 2\Figures\obstical.png"
@@ -33,23 +32,23 @@ class Moving:
         self.velocity = Vec2(random.uniform(-1, 1), random.uniform(-1, 1))
         
         self.perceived_distance = 100
-
+        self.flee_radius = 40
         
     def move(self):
         self.position = self.position + self.velocity
-        if self.position.x < 0:
-            self.velocity.x = abs(self.velocity.x)
-        if self.position.y < 0:
-            self.velocity.y = abs(self.velocity.y)
         if self.position.x > SCREEN_X:
-            self.velocity.x = -abs(self.velocity.x)
+            self.position.x = 0
         if self.position.y > SCREEN_Y:
-            self.velocity.y = -abs(self.velocity.y)
+            self.position.y = 0
+        if self.position.x < 0:
+            self.position.x = SCREEN_X
+        if self.position.y < 0:
+            self.position.y = SCREEN_Y
     
     def update(self):
         self.position += self.velocity
         
-    
+        
     def alginment(self, boids):
         """ 
         Every boid sees the locoal boids, so the boids will try to algin with the other boids. Doing this by
@@ -60,12 +59,12 @@ class Moving:
             if boid.position.distance_to(self.position) < self.perceived_distance: # if the boid is in the local area at a distance of 100
                 local_boids.append(boid)
         if len(local_boids) > 0: # if there are boids in the local area
-            avg_vel = Vec2(0, 0) # average velocity
+            avg_vec = Vec2(0, 0) # creates a vector with the value 0, 0
             for boid in local_boids: # for every boid in the local area
-                avg_vel += boid.velocity # average velocity is added to the velocity of the boid
-            avg_vel /= len(local_boids) # 
-            self.velocity = (self.velocity + avg_vel) / 2  
-            self.velocity.scale_to_length(2) 
+                avg_vec += boid.velocity # the average vector is added to the velocity of the boid
+            avg_vec /= len(local_boids) # the average vector is divided by the number of boids in the local area
+            self.velocity = (self.velocity + avg_vec) / 2 # the velocity of the boid is added to the average vector and divided by 2
+            self.velocity.scale_to_length(2)  
         return self.velocity
     
     def cohesion(self, boids):
@@ -85,15 +84,52 @@ class Moving:
             self.velocity.scale_to_length(2)
         return self.velocity
             
-    def separtion(self, boids):
-        """ The separation function, is used to make the boids """
+    """ def separtion(self, boids):
+        #The separation function, is used to make the boids 
+        total = 0
         local_boids = []
         for boid in boids:
-            distance = np.lina
-                    
+            distance = boid.position.distance_to(self.position)
+            if self.position != boid.position and distance < self.perceived_distance:
+                local_boids.append(boid) 
+                diff = self.position - boid.position
+                diff /= distance
+                avg_vec = Vec2(0, 0)
+                avg_vec += diff
+                total += 1
+        if total > 0:
+            avg_vec /= total
+            avg_vec = avg_vec.normalize() * 2
+            steer = avg_vec - self.velocity
+            steer.scale_to_length(1)
+            self.velocity += steer
+            self.velocity.scale_to_length(2)
+        return self.velocity  """  
+    
+    def separtion(self, boids):
+        local_boids = []
+        for boid in boids:
+            distance = boid.position.distance_to(self.position)
+            if self.position != boid.position and distance < self.perceived_distance: 
+                local_boids.append(boid) # if the boid is in the local area at a distance of 100
+                avg_vec = Vec2(0,0) 
+                
+                difference = self.position - boid.position  # The difference between the boid and the other local boid
+                difference /= distance  # The difference is divided by the distance
+                avg_vec += difference # The average vector is added to the difference
+        if len(local_boids) > 0:
+            avg_vec /= len(local_boids)
+            avg_vec = avg_vec.normalize()*2
+            steer = avg_vec - self.velocity
+            steer.scale_to_length(0.7)
+            self.velocity += steer
+            self.velocity.scale_to_length(2)
+        return self.velocity
             
-
-
+            
+            
+            
+            
 """ 
 ---- Trying to make a class that can draw objects ----
 class Drawable:
@@ -106,19 +142,21 @@ class Drawable:
         self.move()
         screen.blit(self.img, (self.x, self.y))
         for obj in objects:
-            obj.draw() """
-
+            obj.draw()
+"""
 
 class Boids(Moving): # In class Boids we will use the class Moves to move, for us the be availble to move something we need to first draw it
     
     def __init__(self):
         super().__init__()
     
-    def draw(self):
+    def draw_and_behaviour(self):
         self.move()
         self.update()
         self.alginment(boids) # This is the alginment function
         self.cohesion(boids) # This is the cohesion function
+        self.separtion(boids) # This is the separtion function
+        
         screen.blit(boid, (self.position.x, self.position.y))
     
     
@@ -129,7 +167,7 @@ class Boids(Moving): # In class Boids we will use the class Moves to move, for u
 
 def draw():
     for boid in boids:
-        boid.draw()
+        boid.draw_and_behaviour()
 
 boids = [Boids() for _ in range(20)]
 
@@ -137,12 +175,13 @@ boids = [Boids() for _ in range(20)]
 prev_time = time.time() * 1000
 while True:
     now = time.time() * 1000
-    if now - prev_time > 60:
+    if now - prev_time > 60: # 60 fps
         event = pg.event.poll()
         if event.type == pg.QUIT:
             break
         
         screen.blit(background, (0,0))
+        
         draw()
         
         pg.display.update()
