@@ -128,7 +128,12 @@ class Moving:
             self.velocity.scale_to_length(2)
         return self.velocity
     
-    #def avoid(self, obstical):
+    def boid_avoid_hoik(self, object):
+        distance = object.position.distance_to(self.position)
+        if distance < self.flee_radius:
+            self.velocity += (self.position - object.position) / 100
+            self.velocity.scale_to_length(2)
+        return self.velocity
              
 """ 
 ---- Trying to make a class that can draw objects ----
@@ -165,12 +170,10 @@ class Boids(Moving): # In class Boids we will use the class Moves to move, for u
         self.alginment(boids) # This is the alginment function
         self.cohesion(boids) # This is the cohesion function
         self.separtion(boids) # This is the separtion function
+        self.boid_avoid_hoik(hoiks) # This is the boid avoid hoik function
+        
         screen.blit(boid, (self.position.x, self.position.y))
         
-        
-          
-    
-    
     
 class Hoiks(Moving):
     def __init__(self):
@@ -180,9 +183,8 @@ class Hoiks(Moving):
     def draw_and_behaviour(self):
         self.move()
         self.update()
-        
+                
         screen.blit(hoik, (self.position.x, self.position.y))
-    
     
 
 #class Objects(MOves):
@@ -195,7 +197,7 @@ def draw():
         
 
 boids = [Boids() for _ in range(20)]
-hoiks = [Hoiks() for _ in range(20)]
+hoiks = [Hoiks() for _ in range(5)]
 
 prev_time = time.time() * 1000
 while True:
