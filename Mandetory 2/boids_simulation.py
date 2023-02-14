@@ -1,6 +1,6 @@
 import pygame as pg
 from pygame import Vector2 as Vec2
-import numpy as np
+import math
 import random
 import time
 
@@ -30,6 +30,7 @@ class Moving:
     def __init__(self):
         self.position = Vec2(random.randint(20, 800), random.randint(20, 600))
         self.velocity = Vec2(random.uniform(-1, 1), random.uniform(-1, 1))
+        self.velocity.normalize()
         
         self.perceived_distance = 100
         self.flee_radius = 40
@@ -47,8 +48,9 @@ class Moving:
     
     def update(self):
         self.position += self.velocity
-        
-        
+        self.velocity.scale_to_length(2)
+        self.move()
+          
     def alginment(self, boids):
         """ 
         Every boid sees the locoal boids, so the boids will try to algin with the other boids. Doing this by
@@ -125,11 +127,9 @@ class Moving:
             self.velocity += steer
             self.velocity.scale_to_length(2)
         return self.velocity
-            
-            
-            
-            
-            
+    
+    #def avoid(self, obstical):
+             
 """ 
 ---- Trying to make a class that can draw objects ----
 class Drawable:
@@ -150,27 +150,52 @@ class Boids(Moving): # In class Boids we will use the class Moves to move, for u
     def __init__(self):
         super().__init__()
     
+    # Function wich rotate the triangle (boid) to the direction of the velocity
+    def rotate(self):
+        angle = math.degrees(math.atan2(self.velocity.y, self.velocity.x)) - 90
+        rotated_image = pg.transform.rotate(boid, angle) # Rotates the boid to the direction of the velocity vector 
+        new_rect = rotated_image.get_rect(center=boid.get_rect(topleft=(self.position.x, self.position.y)).center)
+        return rotated_image, new_rect
+    
+    # Function which draws the boid and the behaviour of the boid
     def draw_and_behaviour(self):
+        boid, rect = self.rotate()
         self.move()
         self.update()
         self.alginment(boids) # This is the alginment function
         self.cohesion(boids) # This is the cohesion function
         self.separtion(boids) # This is the separtion function
-        
         screen.blit(boid, (self.position.x, self.position.y))
+        
+        
+          
     
     
     
-#class Hoiks(Moves):
+class Hoiks(Moving):
+    def __init__(self):
+        super().__init__()
+        
+        
+    def draw_and_behaviour(self):
+        self.move()
+        self.update()
+        
+        screen.blit(hoik, (self.position.x, self.position.y))
+    
+    
 
 #class Objects(MOves):
 
 def draw():
     for boid in boids:
         boid.draw_and_behaviour()
+    for hoik in hoiks:
+        hoik.draw_and_behaviour()
+        
 
 boids = [Boids() for _ in range(20)]
-
+hoiks = [Hoiks() for _ in range(20)]
 
 prev_time = time.time() * 1000
 while True:
