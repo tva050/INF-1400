@@ -184,6 +184,10 @@ class Boids(Moving): # In class Boids we will use the class Moves to move, for u
 class Hoiks(Moving):
     def __init__(self):
         super().__init__()
+        
+    # Add a function to rotate the hoik to the direction of the velocity
+    
+    # Function which makes the hoik hunt the boids
             
 
     def draw_and_behaviour(self):
@@ -193,17 +197,26 @@ class Hoiks(Moving):
         screen.blit(hoik, (self.position.x, self.position.y))
     
 
-#class Objects(MOves):
+class obstacles(Moving):
+    def __init__(self):
+        super().__init__()
+        
+    def draw_and_behaviour(self):
+        screen.blit(object, (self.position.x, self.position.y))
+
 
 def draw():
     for boid in boids:
         boid.draw_and_behaviour()
     for hoik in hoiks:
         hoik.draw_and_behaviour()
+    for obstacle in obstacles:
+        obstacle.draw_and_behaviour()
         
 
 boids = [Boids() for _ in range(20)]
 hoiks = [Hoiks() for _ in range(10)]
+obstacles = [obstacles() for _ in range(5)]
 
 prev_time = time.time() * 1000
 while True:
