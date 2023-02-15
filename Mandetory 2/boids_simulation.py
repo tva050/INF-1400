@@ -6,13 +6,23 @@ import time
 
 SCREEN_X = 800
 SCREEN_Y = 600
-#BOID_FILE = r"Mandetory 2\Figures\right-arrow.png"
 BOID_FILE = r"Mandetory 2\Figures\navigate.png"
 HOIK_FILE = r"Mandetory 2\Figures\hoik.png"
 OBSTICALS_FILE = r"Mandetory 2\Figures\polygon.png"
-#BG_FILE = "Mandetory 2\Figures\sky_bg.png"
 #BG_FILE = r"Mandetory 2\Figures\bk.jpg"
+
 pg.init()
+""" ----------------- Variables ----------------- """
+# BOIDS
+MAX_SPEED = 5
+
+# HOIKS
+HUNT_DISTANCE = 100
+
+# ALL OBJECTS
+AVOID_DISTANCE = 50
+
+""" --------------------------------------------- """
 
 screen = pg.display.set_mode((SCREEN_X, SCREEN_Y), 0)
 """ background = pg.image.load(BG_FILE)
@@ -21,13 +31,11 @@ background.convert() """
 
 
 boid = pg.image.load(BOID_FILE)
-#boid = pg.transform.scale(boid, (10, 10))
 hoik = pg.image.load(HOIK_FILE)
 hoik = pg.transform.scale(hoik, (11, 11))
 obstical = pg.image.load(OBSTICALS_FILE)
-obstical = pg.transform.scale(obstical, (20, 20))
 
-# Class Moves which makes the possition, speed
+# class for the alginment, cohesion and seperation
 class Moving:
     
     def __init__(self):
@@ -66,8 +74,8 @@ class Moving:
             avg_vec = Vec2(0, 0) # creates a vector with the value 0, 0
             for boid in local_boids: # for every boid in the local area
                 avg_vec += boid.velocity # the average vector is added to the velocity of the boid
-            avg_vec /= len(local_boids) # the average vector is divided by the number of boids in the local area
-            self.velocity = (self.velocity + avg_vec) / 2 # the velocity of the boid is added to the average vector and divided by 2
+            avg_vec /= len(local_boids) * MAX_SPEED # the average vector is divided by the number of boids in the local area
+            self.velocity = (self.velocity + avg_vec)  # the velocity of the boid is added to the average vector and divided by 2
             self.velocity.scale_to_length(2)  
         return self.velocity
     
@@ -111,6 +119,8 @@ class Moving:
             self.velocity.scale_to_length(2)
         return self.velocity """   
     
+    
+    # Maby edit this function, so you could get separation and avoidence in one func
     def separation(self, boids):
         local_boids = []
         for boid in boids:
@@ -131,30 +141,23 @@ class Moving:
             self.velocity.scale_to_length(2)
         return self.velocity
     
-    def hunt_to_eat(self, boids):
+    def hunt_to_eat(self): 
         for hoik in hoiks:
             distance = hoik.position.distance_to(self.boid.position)
             if distance < HUNT_DISTANCE:
-                self.velocity += (self.boid.position - hoik.position) / 100
+                self.velocity += (self.boid.position - hoik.position) / HUNT_DISTANCE
                 self.velocity.scale_to_length(2)
-                for boid in boids:
-                    if distance < 10:
-                        boids.remove(boid)       
-            
-""" 
----- Trying to make a class that can draw objects ----
-class Drawable:
-    def __init__(self, x, y, img):
-        self.x = x
-        self.y = y
-        self.img = img
+            for boid in boids:
+                if (hoik.position - boid.position).length() < 10:
+                    boid.position = Vec2(-50,-50)
     
-    def draw(self, objects):
-        self.move()
-        screen.blit(self.img, (self.x, self.y))
-        for obj in objects:
-            obj.draw()
-"""
+    def avoid_obstacles(self):
+        for obstacle in obstacles:
+            distance = obstacle.position.distance_to(self.position)
+            if distance < AVOID_DISTANCE:
+                self.velocity += (self.position - obstacle.position) / AVOID_DISTANCE
+                self.velocity.scale_to_length(2)
+
 
 class Boids(Moving): # In class Boids we will use the class Moves to move, for us the be availble to move something we need to first draw it
     
@@ -180,14 +183,16 @@ class Boids(Moving): # In class Boids we will use the class Moves to move, for u
         boid, rect = self.rotate()
         self.move()
         self.update()
+        #self.avoid_hoiks()
         self.alginment(boids) # This is the alginment function
-        self.cohesion(boids) # This is the cohesion function
-        self.separation(boids) # This is the separtion function
-        self.avoid_hoiks()
-        
+        #self.cohesion(boids) # This is the cohesion function
+        #self.separation(boids) # This is the separtion function
+        #self.avoid_obstacles()
+    
+         
         screen.blit(boid, (self.position.x, self.position.y))
         
-HUNT_DISTANCE = 100
+
 class Hoiks(Moving):
     def __init__(self):
         super().__init__()
@@ -199,16 +204,6 @@ class Hoiks(Moving):
         rotated_image = pg.transform.rotate(hoik, angle)
         new_rect = rotated_image.get_rect(center=hoik.get_rect(topleft=(self.position.x, self.position.y)).center)
         return rotated_image, new_rect
-    
-    # Function which makes the hoik hunt boids
-    """ def hunt_to_eat(self):
-        for hoik in hoiks:
-            distance = hoik.position.distance_to(self.boid.position)
-            if distance < HUNT_DISTANCE:
-                self.velocity += (self.boid.position - hoik.position) / HUNT_DISTANCE
-                self.velocity.scale_to_length(2)
-            if distance < 10:
-                boids.remove(self.boid) """
                  
     # Function which draws the hoik and the behaviour of the hoik
     def draw_and_behaviour(self):
@@ -216,16 +211,16 @@ class Hoiks(Moving):
         self.move()
         self.update()
         self.separation(hoiks) # don't want the hoiks to collide with each other
-        self.hunt_to_eat(hoiks)
-        
+        self.hunt_to_eat()
+        self.avoid_obstacles()
         
         screen.blit(hoik, (self.position.x, self.position.y))
     
 
 class obstacles(Moving):
     def __init__(self):
-        super().__init__()
-        
+        super().__init__()    
+    
     def draw(self):
         screen.blit(obstical, (self.position.x, self.position.y))
 
@@ -233,23 +228,25 @@ class obstacles(Moving):
 def draw():
     for boid in boids:
         boid.draw_and_behaviour()
-    for hoik in hoiks:
+    """ for hoik in hoiks:
         hoik.draw_and_behaviour()
     for obstacle in obstacles:
-        obstacle.draw()
+        obstacle.draw() """
         
 
 boids = [Boids() for _ in range(60)]
-hoiks = [Hoiks() for _ in range(10)]
-obstacles = [obstacles() for _ in range(5)]
+hoiks = [Hoiks() for _ in range(4)]
+obstacles = [obstacles() for _ in range(10)]
+
 
 prev_time = time.time() * 1000
 while True:
     now = time.time() * 1000
     if now - prev_time > 60: # 60 fps
         event = pg.event.poll()
-        if event.type == pg.QUIT:
+        if event.type == pg.QUIT: 
             break
+        
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_ESCAPE: # escape(Esc) will close the window
                 break
