@@ -6,44 +6,43 @@ import time
 
 SCREEN_X = 800
 SCREEN_Y = 600
+
 BOID_FILE = r"Mandetory 2\Figures\navigate.png"
 HOIK_FILE = r"Mandetory 2\Figures\hoik.png"
 OBSTICALS_FILE = r"Mandetory 2\Figures\polygon.png"
-#BG_FILE = r"Mandetory 2\Figures\bk.jpg"
 
 pg.init()
 """ ----------------- Variables ----------------- """
 # BOIDS
-MAX_SPEED = 5
+MAX_SPEED = 10
+BOID_VELOCITY = 5
+AVOID_HOIKS_DISTANCE = 100
 
 # HOIKS
 HUNT_DISTANCE = 100
 
 # ALL OBJECTS
-AVOID_DISTANCE = 50
+AVOID_OBSTICALS_DISTANCE = 100
+PERCEIVED_DISTANCE  = 150
 
 """ --------------------------------------------- """
 
 screen = pg.display.set_mode((SCREEN_X, SCREEN_Y), 0)
-""" background = pg.image.load(BG_FILE)
-background = pg.transform.scale(background, (SCREEN_X, SCREEN_Y))
-background.convert() """
-
 
 boid = pg.image.load(BOID_FILE)
 hoik = pg.image.load(HOIK_FILE)
 hoik = pg.transform.scale(hoik, (11, 11))
 obstical = pg.image.load(OBSTICALS_FILE)
 
-# class for the alginment, cohesion and seperation
+
 class Moving:
+    """ 
     
+    """ 
     def __init__(self):
         self.position = Vec2(random.randint(20, 800), random.randint(20, 600))
         self.velocity = Vec2(random.uniform(-1, 1), random.uniform(-1, 1))
         self.velocity.normalize()
-        
-        self.perceived_distance = 100
         
     def move(self):
         self.position = self.position + self.velocity
@@ -63,12 +62,11 @@ class Moving:
           
     def alginment(self, boids):
         """ 
-        Every boid sees the locoal boids, so the boids will try to algin with the other boids. Doing this by
-        taking the average of the velocity of the boids in the local area. 
+        Alignment function, is used to make the boids move in the same direction as the boids in the local area
         """
         local_boids = [] # List of boids in the local area
         for boid in boids: 
-            if boid.position.distance_to(self.position) < self.perceived_distance: # if the boid is in the local area at a distance of 100
+            if boid.position.distance_to(self.position) < PERCEIVED_DISTANCE : # if the boid is in the local area at a distance of 100
                 local_boids.append(boid)
         if len(local_boids) > 0: # if there are boids in the local area
             avg_vec = Vec2(0, 0) # creates a vector with the value 0, 0
@@ -76,72 +74,49 @@ class Moving:
                 avg_vec += boid.velocity # the average vector is added to the velocity of the boid
             avg_vec /= len(local_boids) * MAX_SPEED # the average vector is divided by the number of boids in the local area
             self.velocity = (self.velocity + avg_vec)  # the velocity of the boid is added to the average vector and divided by 2
-            self.velocity.scale_to_length(2)  
+            self.velocity.scale_to_length(BOID_VELOCITY)
         return self.velocity
     
     def cohesion(self, boids):
         """ 
-        The cohesion function, is used to make the boids try to stay together, 
-        by making the boids try to go to the center of the local boids (the gruop of boids)
+        Cohesion function, is 
         """
         local_boids = [] # List of boids in the local area
         for boid in boids: 
-            if boid.position.distance_to(self.position) < self.perceived_distance: 
+            if boid.position.distance_to(self.position) < PERCEIVED_DISTANCE : 
                 local_boids.append(boid) # if the boid distance is smaller than the perceived distance append to the local boids
         if len(local_boids) > 0:
             avg_pos = Vec2(0, 0)
             for boid in local_boids: 
                 avg_pos += boid.position # updating the average position by the boid position
-            avg_pos /= len(local_boids)
-            self.velocity += (avg_pos - self.position) / self.perceived_distance
-            self.velocity.scale_to_length(2)
-        return self.velocity
-            
-    """ def separation(self, boids):
-        #The separation function, is used to make the boids 
-        total = 0
-        local_boids = []
-        for boid in boids:
-            distance = boid.position.distance_to(self.position)
-            if self.position != boid.position and distance < self.perceived_distance:
-                local_boids.append(boid) 
-                diff = self.position - boid.position
-                diff /= distance
-                avg_vec = Vec2(0, 0)
-                avg_vec += diff
-                total += 1
-        if total > 0:
-            avg_vec /= total
-            avg_vec = avg_vec.normalize() * 2
-            steer = avg_vec - self.velocity
-            steer.scale_to_length(1)
-            self.velocity += steer
-            self.velocity.scale_to_length(2)
-        return self.velocity """   
+            avg_pos /= len(local_boids) 
+            self.velocity += (avg_pos - self.position) / PERCEIVED_DISTANCE * 2
+            self.velocity.scale_to_length(BOID_VELOCITY) 
+        return self.velocity 
     
-    
-    # Maby edit this function, so you could get separation and avoidence in one func
+
     def separation(self, boids):
         local_boids = []
         for boid in boids:
             distance = boid.position.distance_to(self.position)
-            if self.position != boid.position and distance < self.perceived_distance: 
+            if self.position != boid.position and distance < PERCEIVED_DISTANCE : 
                 local_boids.append(boid) # if the boid is in the local area at a distance of 100
-                avg_vec = Vec2(0,0) 
+                avg_vec = Vec2(0,0)
                 
                 difference = self.position - boid.position  # The difference between the boid and the other local boid
                 difference /= distance  # The difference is divided by the distance
                 avg_vec += difference # The average vector is added to the difference
         if len(local_boids) > 0:
+            
             avg_vec /= len(local_boids)
             avg_vec = avg_vec.normalize()*2
             steer = avg_vec - self.velocity
-            steer.scale_to_length(0.7)
+            steer.scale_to_length(1)
             self.velocity += steer
-            self.velocity.scale_to_length(2)
+            self.velocity.scale_to_length(BOID_VELOCITY)
         return self.velocity
     
-    def hunt_to_eat(self): 
+    def hunt_to_eat(self):  # Hoiks hunt boids and eat them if impact
         for hoik in hoiks:
             distance = hoik.position.distance_to(self.boid.position)
             if distance < HUNT_DISTANCE:
@@ -151,31 +126,33 @@ class Moving:
                 if (hoik.position - boid.position).length() < 10:
                     boid.position = Vec2(-50,-50)
     
-    def avoid_obstacles(self):
+    def avoid_obstacles(self): # Boids and hoiks avoide obstacles
         for obstacle in obstacles:
             distance = obstacle.position.distance_to(self.position)
-            if distance < AVOID_DISTANCE:
-                self.velocity += (self.position - obstacle.position) / AVOID_DISTANCE
+            if distance < AVOID_OBSTICALS_DISTANCE :
+                self.velocity += (self.position - obstacle.position) / AVOID_OBSTICALS_DISTANCE 
                 self.velocity.scale_to_length(2)
 
 
-class Boids(Moving): # In class Boids we will use the class Moves to move, for us the be availble to move something we need to first draw it
-    
+class Boids(Moving): 
+    """ 
+    In class Boids we will use the class Moves to move, 
+    for us the be availble to move something we need to first draw it
+    """
     def __init__(self):
         super().__init__()
     
-    # Function wich rotate the triangle (boid) to the direction of the velocity
-    def rotate(self):
+    def rotate(self): # Rotates the triangle (boid) to the direction of the velocity
         angle = math.degrees(-math.atan2(self.velocity.y, self.velocity.x)) - 45
-        rotated_image = pg.transform.rotate(boid, angle) # Rotates the boid to the direction of the velocity vector 
+        rotated_image = pg.transform.rotate(boid, angle) 
         new_rect = rotated_image.get_rect(center=boid.get_rect(topleft=(self.position.x, self.position.y)).center)
         return rotated_image, new_rect
     
     def avoid_hoiks(self):
         for hoik in hoiks:
             distance = hoik.position.distance_to(self.position)
-            if distance < 100:
-                self.velocity += (self.position - hoik.position) / 100
+            if distance < AVOID_HOIKS_DISTANCE:
+                self.velocity += (self.position - hoik.position) / AVOID_HOIKS_DISTANCE
                 self.velocity.scale_to_length(2)
             
     # Function which draws the boid and the behaviour of the boid
@@ -183,17 +160,19 @@ class Boids(Moving): # In class Boids we will use the class Moves to move, for u
         boid, rect = self.rotate()
         self.move()
         self.update()
-        #self.avoid_hoiks()
+        self.avoid_hoiks()
         self.alginment(boids) # This is the alginment function
-        #self.cohesion(boids) # This is the cohesion function
-        #self.separation(boids) # This is the separtion function
-        #self.avoid_obstacles()
+        self.cohesion(boids) # This is the cohesion function
+        self.separation(boids) # This is the separtion function
+        self.avoid_obstacles()
     
-         
         screen.blit(boid, (self.position.x, self.position.y))
         
 
 class Hoiks(Moving):
+    """ 
+    
+    """
     def __init__(self):
         super().__init__()
         self.boid = random.choice(boids)
@@ -218,6 +197,9 @@ class Hoiks(Moving):
     
 
 class obstacles(Moving):
+    """ 
+    
+    """
     def __init__(self):
         super().__init__()    
     
@@ -228,10 +210,10 @@ class obstacles(Moving):
 def draw():
     for boid in boids:
         boid.draw_and_behaviour()
-    """ for hoik in hoiks:
+    for hoik in hoiks:
         hoik.draw_and_behaviour()
     for obstacle in obstacles:
-        obstacle.draw() """
+       obstacle.draw()
         
 
 boids = [Boids() for _ in range(60)]
@@ -258,5 +240,6 @@ while True:
         
         pg.display.update()
         prev_time = now
+        
 print("Good bye, for now! ")
         
