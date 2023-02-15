@@ -9,7 +9,7 @@ SCREEN_Y = 600
 #BOID_FILE = r"Mandetory 2\Figures\right-arrow.png"
 BOID_FILE = r"Mandetory 2\Figures\navigate.png"
 HOIK_FILE = r"Mandetory 2\Figures\hoik.png"
-OBSTICALS_FILE = r"Mandetory 2\Figures\obstical.png"
+OBSTICALS_FILE = r"Mandetory 2\Figures\polygon.png"
 #BG_FILE = "Mandetory 2\Figures\sky_bg.png"
 #BG_FILE = r"Mandetory 2\Figures\bk.jpg"
 pg.init()
@@ -23,9 +23,9 @@ background.convert() """
 boid = pg.image.load(BOID_FILE)
 #boid = pg.transform.scale(boid, (10, 10))
 hoik = pg.image.load(HOIK_FILE)
-hoik = pg.transform.scale(hoik, (10, 10))
+hoik = pg.transform.scale(hoik, (11, 11))
 obstical = pg.image.load(OBSTICALS_FILE)
-obstical = pg.transform.scale(obstical, (15, 15))
+obstical = pg.transform.scale(obstical, (20, 20))
 
 # Class Moves which makes the possition, speed
 class Moving:
@@ -131,9 +131,16 @@ class Moving:
             self.velocity.scale_to_length(2)
         return self.velocity
     
-
-        
-             
+    def hunt_to_eat(self, boids):
+        for hoik in hoiks:
+            distance = hoik.position.distance_to(self.boid.position)
+            if distance < HUNT_DISTANCE:
+                self.velocity += (self.boid.position - hoik.position) / 100
+                self.velocity.scale_to_length(2)
+                for boid in boids:
+                    if distance < 10:
+                        boids.remove(boid)       
+            
 """ 
 ---- Trying to make a class that can draw objects ----
 class Drawable:
@@ -167,7 +174,7 @@ class Boids(Moving): # In class Boids we will use the class Moves to move, for u
             if distance < 100:
                 self.velocity += (self.position - hoik.position) / 100
                 self.velocity.scale_to_length(2)
-    
+            
     # Function which draws the boid and the behaviour of the boid
     def draw_and_behaviour(self):
         boid, rect = self.rotate()
@@ -180,20 +187,38 @@ class Boids(Moving): # In class Boids we will use the class Moves to move, for u
         
         screen.blit(boid, (self.position.x, self.position.y))
         
-    
+HUNT_DISTANCE = 100
 class Hoiks(Moving):
     def __init__(self):
         super().__init__()
+        self.boid = random.choice(boids)
         
     # Add a function to rotate the hoik to the direction of the velocity
+    def rotate(self):
+        angle = math.degrees(-math.atan2(self.velocity.y, self.velocity.x))
+        rotated_image = pg.transform.rotate(hoik, angle)
+        new_rect = rotated_image.get_rect(center=hoik.get_rect(topleft=(self.position.x, self.position.y)).center)
+        return rotated_image, new_rect
     
-    # Function which makes the hoik hunt the boids
-            
-
+    # Function which makes the hoik hunt boids
+    """ def hunt_to_eat(self):
+        for hoik in hoiks:
+            distance = hoik.position.distance_to(self.boid.position)
+            if distance < HUNT_DISTANCE:
+                self.velocity += (self.boid.position - hoik.position) / HUNT_DISTANCE
+                self.velocity.scale_to_length(2)
+            if distance < 10:
+                boids.remove(self.boid) """
+                 
+    # Function which draws the hoik and the behaviour of the hoik
     def draw_and_behaviour(self):
+        hoik, rect = self.rotate()
         self.move()
         self.update()
-                
+        self.separation(hoiks) # don't want the hoiks to collide with each other
+        self.hunt_to_eat(hoiks)
+        
+        
         screen.blit(hoik, (self.position.x, self.position.y))
     
 
@@ -201,8 +226,8 @@ class obstacles(Moving):
     def __init__(self):
         super().__init__()
         
-    def draw_and_behaviour(self):
-        screen.blit(object, (self.position.x, self.position.y))
+    def draw(self):
+        screen.blit(obstical, (self.position.x, self.position.y))
 
 
 def draw():
@@ -211,10 +236,10 @@ def draw():
     for hoik in hoiks:
         hoik.draw_and_behaviour()
     for obstacle in obstacles:
-        obstacle.draw_and_behaviour()
+        obstacle.draw()
         
 
-boids = [Boids() for _ in range(20)]
+boids = [Boids() for _ in range(60)]
 hoiks = [Hoiks() for _ in range(10)]
 obstacles = [obstacles() for _ in range(5)]
 
@@ -225,6 +250,9 @@ while True:
         event = pg.event.poll()
         if event.type == pg.QUIT:
             break
+        if event.type == pg.KEYDOWN:
+            if event.key == pg.K_ESCAPE: # escape(Esc) will close the window
+                break
         
         #screen.blit(background, (0,0))
         screen.fill([32,32,32])
