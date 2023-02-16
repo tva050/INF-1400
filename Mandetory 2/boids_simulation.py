@@ -12,7 +12,7 @@ HOIK_FILE = r"Mandetory 2\Figures\hoik.png"
 OBSTICALS_FILE = r"Mandetory 2\Figures\polygon.png"
 
 pg.init()
-pg.display.set_caption("Bodis, assignment 2")  # Name the window 
+pg.display.set_caption("Boids, assignment 2")  # Name the window 
 """ ----------------- Variables ----------------- """
 # BOIDS
 MAX_SPEED = 10
