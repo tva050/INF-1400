@@ -12,6 +12,7 @@ HOIK_FILE = r"Mandetory 2\Figures\hoik.png"
 OBSTICALS_FILE = r"Mandetory 2\Figures\polygon.png"
 
 pg.init()
+pg.display.set_caption("Bodis, assignment 2")  # Name the window 
 """ ----------------- Variables ----------------- """
 # BOIDS
 MAX_SPEED = 10
@@ -22,8 +23,8 @@ AVOID_HOIKS_DISTANCE = 100
 HUNT_DISTANCE = 100
 
 # ALL OBJECTS
-AVOID_OBSTICALS_DISTANCE = 100
-PERCEIVED_DISTANCE  = 150
+OBSTICAL_SIZE  = 10 
+PERCEIVED_DISTANCE  = 200
 
 """ --------------------------------------------- """
 
@@ -123,14 +124,15 @@ class Moving:
                 self.velocity += (self.boid.position - hoik.position) / HUNT_DISTANCE
                 self.velocity.scale_to_length(2)
             for boid in boids:
-                if (hoik.position - boid.position).length() < 10:
-                    boid.position = Vec2(-50,-50)
+                if (hoik.position - boid.position).length() < 12:
+                    boids.remove(boid)
+                    
     
     def avoid_obstacles(self): # Boids and hoiks avoide obstacles
         for obstacle in obstacles:
             distance = obstacle.position.distance_to(self.position)
-            if distance < AVOID_OBSTICALS_DISTANCE :
-                self.velocity += (self.position - obstacle.position) / AVOID_OBSTICALS_DISTANCE 
+            if distance < OBSTICAL_SIZE :
+                self.velocity += (self.position - obstacle.position) * OBSTICAL_SIZE 
                 self.velocity.scale_to_length(2)
 
 
@@ -214,13 +216,25 @@ def draw():
         hoik.draw_and_behaviour()
     for obstacle in obstacles:
        obstacle.draw()
-        
+
 
 boids = [Boids() for _ in range(60)]
-hoiks = [Hoiks() for _ in range(4)]
+hoiks = [Hoiks() for _ in range(5)]
 obstacles = [obstacles() for _ in range(10)]
 
+font = pg.font.SysFont("impact", 20)
+text_x = 10
+text_y = 10
+# Function which calculates how many boids are not eaten
+def boids_counter(x ,y):
+    counter = 0
+    for boid in boids:
+        if boid.position.x != -50:
+            counter += 1
+    text = font.render("Boids: " + str(counter), True, (255,255,255))
+    screen.blit(text, (x,y))
 
+    
 prev_time = time.time() * 1000
 while True:
     now = time.time() * 1000
@@ -233,10 +247,12 @@ while True:
             if event.key == pg.K_ESCAPE: # escape(Esc) will close the window
                 break
         
-        #screen.blit(background, (0,0))
+        # If the B key is pressed the boids will be added to the list boids 
+
         screen.fill([32,32,32])
         
         draw()
+        boids_counter(text_x, text_y)
         
         pg.display.update()
         prev_time = now
