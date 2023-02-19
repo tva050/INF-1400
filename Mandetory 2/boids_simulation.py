@@ -105,10 +105,10 @@ class Moving:
                 difference /= distance  
                 avg_vec += difference 
         if len(local_boids) > 0: 
-            avg_vec /= len(local_boids)
-            avg_vec = avg_vec.normalize()*2
+            avg_vec /= len(local_boids) 
+            avg_vec = avg_vec.normalize()*2 
             
-            steer = avg_vec - self.velocity
+            steer = avg_vec - self.velocity 
             steer.scale_to_length(1)
             
             self.velocity += steer
@@ -119,11 +119,11 @@ class Moving:
         for hoik in hoiks:
             distance = hoik.position.distance_to(self.boid.position)
             if distance < HUNT_DISTANCE:
-                self.velocity += (self.boid.position - hoik.position) / HUNT_DISTANCE
+                self.velocity += (self.boid.position - hoik.position) / HUNT_DISTANCE  # The hoik moves towards the boid
                 self.velocity.scale_to_length(2)
             for boid in boids:
-                if (hoik.position - boid.position).length() < 12:
-                    boids.remove(boid)
+                if (hoik.position - boid.position).length() < 12: # If the hoik collides with the boid (12 is the size of the boid)
+                    boids.remove(boid)                            # the boid is removed from the list of boids
                     
     def avoid_obstacles(self): # Boids and hoiks avoide obstacles
         for obstacle in obstacles:
