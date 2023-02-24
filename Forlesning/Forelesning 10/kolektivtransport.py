@@ -20,7 +20,30 @@ class Person():
     def __str__(self):
         return "Person som heter " + self.navn + " med ansvar for: " + self.ansvarsområde
     
+class Båtfører(Person):
+
+    def __init__(self, navn, ansvarsområde, serifikat, kan_sikkerhet):
+        super().__init__(navn, ansvarsområde)
+        self.serifikat = serifikat
+        self.kan_sikkerhet = kan_sikkerhet
+    
+    # Polygrafi
+    def __str__(self):
+        s = "=== Båtfører ===\n"
+        s += super().__str__()
+        if self.kan_sikkerhet:
+            s += "\nPerson har sikkerhetskurs"
+        else:
+            s += "\nPersonen har IKKE sikkerhetskurs"
+        return s
+
+class Busssjåfør(Person):
+    
+    def __init__(self, navn, serifikat):
+        super().__init__(navn, "Sjåfør")
+        
+            
 
 if __name__ == "__main__":
-    per = Person("Per")
+    per = Båtfører("per", "kaptein", "A5L1", True)
     print(per)
