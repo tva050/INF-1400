@@ -12,20 +12,26 @@ class Config():
     pygame.display.set_caption("Shadow of the Moon")
     pygame.font.init()
     
-    screen_width = 900
-    screen_height = 600
+    SCREEN_WIDTH = 900
+    SCREEN_HEIGHT = 600
     
-    screen = pygame.display.set_mode((screen_width, screen_height), 0)
-    background = pygame.image.load("assets\space_background.jpg")
-    background = pygame.transform.scale(background, (screen_width, screen_height)).convert()
+    SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0)
+    BACKGROUND = "assets\space_background.jpg"
+    """ BACKGROUND = pygame.image.load("assets\space_background.jpg")
+    BACKGROUND = pygame.transform.scale(BACKGROUND, (SCREEN_WIDTH, SCREEN_HEIGHT)).convert() """
     
-    player1_img =  pygame.image.load("assets\player1.png")
-    player1_img = pygame.transform.scale(player1_img, (12,12))
-    player2_img =  pygame.image.load("assets\player2.png")
-    player2_img = pygame.transform.scale(player2_img, (12,12))
+    PLAYER1_IMG = "assets\player1.png"
+    PLAYER2_IMG = "assets\player2.png"
+    """ PLAYER1_IMG =  pygame.image.load("assets\player1.png").convert_alpha()
+    PLAYER1_IMG = pygame.transform.scale(PLAYER1_IMG, (71.9, 54))
+    PLAYER2_IMG =  pygame.image.load("assets\player2.png").convert_alpha()
+    PLAYER2_IMG = pygame.transform.scale(PLAYER2_IMG, (71.9, 54)) """
     
-    start_1 = pygame.image.load("assets\startpad.png")
+    PLATFORM = "assets\startpad.png"
+    OBSTEACLE = "assets\obstacle.png"
     
+    FUEL = 100 
+    GRAVITY = 10
     
     
     
