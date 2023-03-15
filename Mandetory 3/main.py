@@ -1,27 +1,20 @@
 import pygame
 
 from config import Config
+ 
+class Game:
+    
 
-
-
-class Game():
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    pygame.quit()
-                    quit()
-
-        Config.screen.blit(Config.background, (0, 0))
-        pygame.display.update()
         
+        Config.SCREEN.blit(Config.BACKGROUND, (0, 0)) # Update background
+        
+        Config.SCREEN.blit(Config.PLAYER1_IMG, (0, 0))
+        Config.SCREEN.blit(Config.PLAYER2_IMG, (0, 0))
 
-
-if __name__ == "__main__":
-    pygame.init()
-    br = Game()
-    
+        pygame.display.update()
     
