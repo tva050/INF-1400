@@ -8,6 +8,8 @@ from obstecals import Obstacles
 
 class Game:
     def __init__(self):
+        
+        # Spaceships
         self.player1 = Spaceships(Config.PLAYER1_IMG, Config.SCREEN, (0, 0))
         self.player2 = Spaceships(Config.PLAYER2_IMG, Config.SCREEN, (0, 0))
         
@@ -16,6 +18,7 @@ class Game:
         for spaceship in self.players_spaceships:
             self.spaceship_group.add(spaceship)
         
+        # Platforms
         self.platform_1 = Platform(Config.PLATFORM_PLAYER1_POS[0], Config.PLATFORM_PLAYER1_POS[1])
         self.platform_2 = Platform(Config.PLATFORM_PLAYER2_POS[0], Config.PLATFORM_PLAYER2_POS[1])
         self.platform_group = pygame.sprite.Group()
