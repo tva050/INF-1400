@@ -1,20 +1,29 @@
 import pygame 
 from pygame import Vector2 as Vec2
+import math
+import numpy as np
 from config import Config
 
 class Spaceships(pygame.sprite.Sprite):
-    def __init__(self, image, screen ,start_pos):
+    def __init__(self, image, start_position):
         super().__init__() #
         self.image = pygame.image.load(image).convert_alpha()
-        self.image = pygame.transform.scale(self.image, (71.9, 54))
-        self.screen = screen
-        self.start_pos = start_pos
+        self.image = pygame.transform.scale(self.image, (90/1.5, 64/1.5))
         self.rect = self.image.get_rect()
-        self.rect.x = self.start_pos[0]
-        self.rect.y = self.start_pos[1]
+        self.rect.x = start_position[0]
+        self.rect.y = start_position[1]
+        self.rect.center = [self.rect.x, self.rect.y]
+        self.angle = Config.START_ANGLE
         
     def draw(self): 
-        self.screen.blit(self.image, self.start_pos)
+
+        return Config.SCREEN.blit(self.image, self.rect)
+    
+    def update(self):
+        self.rect = self.draw()
+    
+    
+        
         
     
         

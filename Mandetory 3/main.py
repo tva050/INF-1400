@@ -10,12 +10,10 @@ class Game:
     def __init__(self):
         
         # Spaceships
-        self.player1 = Spaceships(Config.PLAYER1_IMG, Config.SCREEN, (0, 0))
-        self.player2 = Spaceships(Config.PLAYER2_IMG, Config.SCREEN, (0, 0))
-        
-        self.players_spaceships = [self.player1, self.player2]
+        self.player1_spaceship = Spaceships(Config.PLAYER1_IMG, Config.START_POSITION_PLAYER1)
+        self.player2_spaceship = Spaceships(Config.PLAYER2_IMG, Config.START_POSITION_PLAYER2)
         self.spaceship_group = pygame.sprite.Group()
-        for spaceship in self.players_spaceships:
+        for spaceship in self.player1_spaceship, self.player2_spaceship:
             self.spaceship_group.add(spaceship)
         
         # Platforms
@@ -36,9 +34,9 @@ class Game:
 
             Config.SCREEN.blit(Config.BACKGROUND, (0, 0)) # Update background
             
-            self.spaceship_group.draw(Config.SCREEN) # Update spaceship
-            self.platform_group.draw(Config.SCREEN) # Update platform
             
+            self.platform_group.draw(Config.SCREEN) # Update platform
+            self.spaceship_group.draw(Config.SCREEN) # Update spaceship
             
             pygame.display.update()
 

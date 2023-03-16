@@ -12,11 +12,10 @@ class Config():
     pygame.init()
     pygame.display.set_caption("Shadow of the Moon")
     
-    # Screen size
+    # Screen specifications
     SCREEN_WIDTH = 900
     SCREEN_HEIGHT = 600
-    
-    # Screen size
+    # Screen
     SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0)
     
     # Background image
@@ -24,10 +23,10 @@ class Config():
     BACKGROUND = pygame.transform.scale(BACKGROUND, (SCREEN_WIDTH, SCREEN_HEIGHT)).convert() 
     
     # Player images
-    PLAYER1_IMG = "assets\player1.png" 
-    PLAYER2_IMG = "assets\player2.png"
-    PLAYER1_START_POSITION = (300, 700)
-    PLAYER2_START_POSITION = (600, 700)
+    PLAYER1_IMG = "assets\spaceship1.png" 
+    PLAYER2_IMG = "assets\spaceship2.png"
+    START_POSITION_PLAYER1 = (SCREEN_WIDTH-840, SCREEN_HEIGHT-95)
+    START_POSITION_PLAYER2 = (SCREEN_WIDTH-60, SCREEN_HEIGHT-95)
     
 
     # Obstacle and platform images
@@ -38,17 +37,16 @@ class Config():
     
     OBSTEACLE = "assets\obstacle.png"
     
-    START_ANGLE = np.pi/2 
-    
+    # Obstacle settings
     OBSTEACLE_SIZE = 100 
     OBSTEACLE_AMOUNT = 5
     
     
     
-    # Values
+    # Spaceship settings
     FUEL = 100 
     GRAVITY = 10
-    
+    START_ANGLE = np.pi/2
 
     
     
