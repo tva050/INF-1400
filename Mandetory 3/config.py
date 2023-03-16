@@ -33,7 +33,7 @@ class Config():
     # Obstacle and platform images
     PLATFORM = "assets\startpad.png"
     
-    PLATFORM_PLAYER1_POS = (300, 700)
+    PLATFORM_PLAYER1_POS = (100, 200)
     PLATFORM_PLAYER2_POS = (600, 700)
     
     OBSTEACLE = "assets\obstacle.png"

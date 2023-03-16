@@ -14,8 +14,6 @@ class Spaceships(pygame.sprite.Sprite):
         self.rect.y = self.start_pos[1]
         
     def draw(self): 
-        
-        
         self.screen.blit(self.image, self.start_pos)
         
     
