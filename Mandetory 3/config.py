@@ -35,11 +35,16 @@ class Config():
     PLATFORM_PLAYER1_POS = (SCREEN_WIDTH-840, SCREEN_HEIGHT-50)
     PLATFORM_PLAYER2_POS = (SCREEN_WIDTH-60, SCREEN_HEIGHT-50)
     
-    OBSTEACLE = "assets\obstacle.png"
+    OBSTACLE = "assets\obstacle.png"
+    SEPERATION_OBSTACLE = r"assets\asteroid-big-0003.png"
     
     # Obstacle settings
-    OBSTEACLE_SIZE = 100 
-    OBSTEACLE_AMOUNT = 5
+    OBSTACLE_SIZE = (80, 80)
+    # Make the asteroid be only between the start platforms, and 
+    OBSTACLE_AREA = (SCREEN_WIDTH-200, SCREEN_WIDTH-100)
+    SEPERATION_OBSTACLE_POSITON = (SCREEN_WIDTH/2, SCREEN_HEIGHT-100)
+    NUMBER_OF_OBSTACLES = 5 
+    
     
     
     

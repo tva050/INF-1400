@@ -1,4 +1,5 @@
 import pygame
+import random
 
 from config import Config
 from spaceships import Spaceships
@@ -22,6 +23,14 @@ class Game:
         self.platform_group = pygame.sprite.Group()
         for platform in self.platform_1, self.platform_2:
             self.platform_group.add(platform)
+            
+        # Obstacles
+        self.obstacle_group = pygame.sprite.Group()
+        for _ in range(Config.NUMBER_OF_OBSTACLES):
+            self.obstacle_group.add(Obstacles(random.randint(0, Config.OBSTACLE_AREA[0]), random.randint(0, Config.OBSTACLE_AREA[1])))
+            
+            
+    
         
 
     
@@ -37,6 +46,7 @@ class Game:
             
             self.platform_group.draw(Config.SCREEN) # Update platform
             self.spaceship_group.draw(Config.SCREEN) # Update spaceship
+            self.obstacle_group.draw(Config.SCREEN) # Update obstacle
             
             pygame.display.update()
 
