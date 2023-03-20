@@ -11,8 +11,8 @@ class Game:
     def __init__(self):
         self.clock = pygame.time.Clock()
         # Spaceships
-        self.player1_spaceship = Spaceships(Config.PLAYER1_IMG, Config.START_POSITION_PLAYER1, self.spaceship_player1_move)
-        self.player2_spaceship = Spaceships(Config.PLAYER2_IMG, Config.START_POSITION_PLAYER2, self.spaceship_player2_move)
+        self.player1_spaceship = Spaceships(Config.PLAYER1_IMG, Config.START_POSITION_PLAYER1, id = 1)
+        self.player2_spaceship = Spaceships(Config.PLAYER2_IMG, Config.START_POSITION_PLAYER2, id = 2)
         self.spaceship_group = pygame.sprite.Group()
         for spaceship in self.player1_spaceship, self.player2_spaceship:
             self.spaceship_group.add(spaceship)
@@ -53,32 +53,7 @@ class Game:
             
             pygame.display.update()
     
-    def spaceship_player1_move(self):
-        pressed = pygame.key.get_pressed()
-        if pressed[pygame.K_w]:
-            self.player1_spaceship.move_up()
-        if pressed[pygame.K_s]:
-            self.player1_spaceship.move_down()
-        if pressed[pygame.K_a]:
-            self.player1_spaceship.move_left()
-        if pressed[pygame.K_d]:
-            self.player1_spaceship.move_right()
-    
-    def spaceship_player2_move(self):
-        pressed = pygame.key.get_pressed()
-        if pressed[pygame.K_UP]:
-            self.player2_spaceship.move_up()
-        if pressed[pygame.K_DOWN]:
-            self.player2_spaceship.move_down()
-        if pressed[pygame.K_LEFT]:
-            self.player2_spaceship.move_left()
-        if pressed[pygame.K_RIGHT]:
-            self.player2_spaceship.move_right()
-    
-    def add_spaceship_movement(self):
-        self.spaceship_player1_move()
-        self.spaceship_player2_move()
-    
+
         
     
 
