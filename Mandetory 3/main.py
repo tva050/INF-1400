@@ -9,10 +9,10 @@ from obstecals import Obstacles
 
 class Game:
     def __init__(self):
-        
+        self.clock = pygame.time.Clock()
         # Spaceships
-        self.player1_spaceship = Spaceships(Config.PLAYER1_IMG, Config.START_POSITION_PLAYER1)
-        self.player2_spaceship = Spaceships(Config.PLAYER2_IMG, Config.START_POSITION_PLAYER2)
+        self.player1_spaceship = Spaceships(Config.PLAYER1_IMG, Config.START_POSITION_PLAYER1, self.spaceship_player1_move)
+        self.player2_spaceship = Spaceships(Config.PLAYER2_IMG, Config.START_POSITION_PLAYER2, self.spaceship_player2_move)
         self.spaceship_group = pygame.sprite.Group()
         for spaceship in self.player1_spaceship, self.player2_spaceship:
             self.spaceship_group.add(spaceship)
@@ -25,12 +25,14 @@ class Game:
             self.platform_group.add(platform)
             
         # Obstacles
+        self.obstacle_1 = Obstacles(Config.OBSTACLE_1_POS[0], Config.OBSTACLE_1_POS[1])
+        self.obstacle_2 = Obstacles(Config.OBSTACLE_2_POS[0], Config.OBSTACLE_2_POS[1])
+        self.obstacle_3 = Obstacles(Config.OBSTACLE_3_POS[0], Config.OBSTACLE_3_POS[1])
+        self.obstacle_4 = Obstacles(Config.OBSTACLE_4_POS[0], Config.OBSTACLE_4_POS[1])
+        self.obstacle_5 = Obstacles(Config.OBSTACLE_5_POS[0], Config.OBSTACLE_5_POS[1])
         self.obstacle_group = pygame.sprite.Group()
-        for _ in range(Config.NUMBER_OF_OBSTACLES):
-            self.obstacle_group.add(Obstacles(Config.OBSTACLE,random.randint(0, Config.OBSTACLE_AREA[0]), random.randint(0, Config.OBSTACLE_AREA[1])))
-        self.obstacle_group.add(Obstacles(Config.SEPERATION_OBSTACLE, Config.SEPERATION_OBSTACLE_POSITON[0], Config.SEPERATION_OBSTACLE_POSITON[1])) 
-            
-    
+        for obstacle in self.obstacle_1, self.obstacle_2, self.obstacle_3, self.obstacle_4, self.obstacle_5:
+            self.obstacle_group.add(obstacle)
         
 
     
@@ -41,6 +43,7 @@ class Game:
                     pygame.quit()
                     quit()
 
+            self.clock.tick(Config.FPS) # Set FPS
             Config.SCREEN.blit(Config.BACKGROUND, (0, 0)) # Update background
             
             
@@ -49,6 +52,35 @@ class Game:
             self.obstacle_group.draw(Config.SCREEN) # Update obstacle
             
             pygame.display.update()
+    
+    def spaceship_player1_move(self):
+        pressed = pygame.key.get_pressed()
+        if pressed[pygame.K_w]:
+            self.player1_spaceship.move_up()
+        if pressed[pygame.K_s]:
+            self.player1_spaceship.move_down()
+        if pressed[pygame.K_a]:
+            self.player1_spaceship.move_left()
+        if pressed[pygame.K_d]:
+            self.player1_spaceship.move_right()
+    
+    def spaceship_player2_move(self):
+        pressed = pygame.key.get_pressed()
+        if pressed[pygame.K_UP]:
+            self.player2_spaceship.move_up()
+        if pressed[pygame.K_DOWN]:
+            self.player2_spaceship.move_down()
+        if pressed[pygame.K_LEFT]:
+            self.player2_spaceship.move_left()
+        if pressed[pygame.K_RIGHT]:
+            self.player2_spaceship.move_right()
+    
+    def add_spaceship_movement(self):
+        self.spaceship_player1_move()
+        self.spaceship_player2_move()
+    
+        
+    
 
         
     

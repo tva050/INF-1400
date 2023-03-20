@@ -15,6 +15,7 @@ class Config():
     # Screen specifications
     SCREEN_WIDTH = 900
     SCREEN_HEIGHT = 600
+    FPS = 60 # Frames per second
     # Screen
     SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0)
     
@@ -39,15 +40,14 @@ class Config():
     SEPERATION_OBSTACLE = r"assets\punktbilde.png"
     
     # Obstacle settings
-    #OBSTACLE_SIZE = (80, 80)
+    OBSTACLE_SIZE = (90, 90)
     # Make the asteroid be only between the start platforms, and 
-    OBSTACLE_AREA = (SCREEN_WIDTH-200, SCREEN_WIDTH-100)
-    SEPERATION_OBSTACLE_POSITON = (SCREEN_WIDTH/2, SCREEN_HEIGHT-100)
-    NUMBER_OF_OBSTACLES = 5 
-    
-    
-    
-    
+    OBSTACLE_1_POS = (SCREEN_WIDTH-550, SCREEN_HEIGHT-250)
+    OBSTACLE_2_POS = (SCREEN_WIDTH-250, SCREEN_HEIGHT-150)
+    OBSTACLE_3_POS = (SCREEN_WIDTH-600, SCREEN_HEIGHT-100)
+    OBSTACLE_4_POS = (SCREEN_WIDTH-350, SCREEN_HEIGHT-400)
+    OBSTACLE_5_POS = (SCREEN_WIDTH-650, SCREEN_HEIGHT-500)
+        
     # Spaceship settings
     FUEL = 100 
     GRAVITY = 10
