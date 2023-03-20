@@ -27,8 +27,8 @@ class Game:
         # Obstacles
         self.obstacle_group = pygame.sprite.Group()
         for _ in range(Config.NUMBER_OF_OBSTACLES):
-            self.obstacle_group.add(Obstacles(random.randint(0, Config.OBSTACLE_AREA[0]), random.randint(0, Config.OBSTACLE_AREA[1])))
-            
+            self.obstacle_group.add(Obstacles(Config.OBSTACLE,random.randint(0, Config.OBSTACLE_AREA[0]), random.randint(0, Config.OBSTACLE_AREA[1])))
+        self.obstacle_group.add(Obstacles(Config.SEPERATION_OBSTACLE, Config.SEPERATION_OBSTACLE_POSITON[0], Config.SEPERATION_OBSTACLE_POSITON[1])) 
             
     
         
