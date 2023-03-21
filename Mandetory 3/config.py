@@ -22,11 +22,13 @@ class Config():
     BACKGROUND = pygame.image.load("assets\space_background.jpg")
     BACKGROUND = pygame.transform.scale(BACKGROUND, (SCREEN_WIDTH, SCREEN_HEIGHT)).convert() 
     
-    # Player images
+    # Players images
     PLAYER1_IMG = "assets\spaceship1.png" 
     PLAYER2_IMG = "assets\spaceship2.png"
     START_POSITION_PLAYER1 = (SCREEN_WIDTH-840, SCREEN_HEIGHT-95)
     START_POSITION_PLAYER2 = (SCREEN_WIDTH-60, SCREEN_HEIGHT-95)
+    
+
     
 
     # Obstacle and platform images
