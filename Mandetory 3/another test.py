@@ -1,105 +1,5 @@
 import pygame 
-""" 
-class Config:
-    SCREEN_WIDTH = 900
-    SCREEN_HEIGHT = 600
-    FPS = 60
 
-
-    SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0)
-
-    BACKGROUND = pygame.image.load("assets\space_background.jpg")
-    BACKGROUND = pygame.transform.scale(BACKGROUND, (SCREEN_WIDTH, SCREEN_HEIGHT)).convert() 
-
-    PLAYER1_IMG = pygame.image.load("assets\spaceship1.png")
-    PLAYER1_IMG = pygame.transform.scale(PLAYER1_IMG, (90/1.5, 64/1.5)).convert_alpha()
-
-    x, y = 900/2, 600/2
-    PLAYER_VEL = 5
-    GRAVITY = 10
-
-class player(pygame.sprite.Sprite):
-    def __init__(self, position, speed):
-        super().__init__()
-        self.image = pygame.image.load("assets\spaceship1.png")
-        self.image = pygame.transform.scale(self.image, (90/1.5, 64/1.5)).convert_alpha()
-
-        self.x_vel = 0
-        self.y_vel = 0
-        self.direction = "left"
-        
-        self.rect = self.image.get_rect()
-        self.rect.x = position[0]
-        self.rect.y = position[1]
-        self.rect.center = [self.rect.x, self.rect.y]
-        
-        self.fall_count = 0
-    
-    def move(self, dx, dy):
-        self.rect.x += dx
-        self.rect.y += dy
-    
-    def move_left(self, vel):
-        self.x_vel = -vel
-        if self.direction != "left":
-            self.direction = "left"
-            
-    
-    def move_rigth(self, vel):
-        self.x_vel = vel
-        if self.direction != "right":
-            self.direction = "right"
-    
-    def loop(self, fps):
-        self.y_vel += min(1, (self.fall_count / fps) * Config.GRAVITY)
-        self.move(self.x_vel, self.y_vel)
-        
-        self.fall_count += 1
-    
-    def draw(self, screen):
-        screen.blit(self.image, self.rect)
-        
-        
-def handle_move(player):
-    keys = pygame.key.get_pressed()
-    
-    player.x_vel = 0
-    if keys[pygame.K_LEFT]:
-        player.move_left(Config.PLAYER_VEL)
-    if keys[pygame.K_RIGHT]:
-        player.move_rigth(Config.PLAYER_VEL)
-    if keys[pygame.K_UP]:
-        player.y_vel = -Config.PLAYER_VEL
-        player.fall_count = 0
-    
-         
-
-player = player((Config.x, Config.y), (0, 0))
-        
-def game_loop():
-    clock = pygame.time.Clock()
-    run = True
-    while run:
-        clock.tick(Config.FPS)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-                break
-            
-        Config.SCREEN.blit(Config.BACKGROUND, (0, 0))
-        player.loop(Config.FPS) 
-        handle_move(player)
-        player.draw(Config.SCREEN)
-      
-        pygame.display.update()
-    
-    pygame.quit()
-
-if __name__ == "__main__":
-    pygame.init()
-    game_loop()
-     """
-    
 """ _______CONFIG_______ """
 
 class Config:
@@ -145,13 +45,126 @@ class Config:
     # Setting 
     GRAVITY = 10
 
+
+""" _______SPACESHIPS_______ """
 class Spaceships(pygame.sprite.Sprite):
     def __init__(self, image, position):
         super().__init__()
         self.image = pygame.image.load(image)
         self.image = pygame.transform.scale(self.image, Config.SPACESHIP_SIZE).convert_alpha()
+        self.image_width = self.image.get_width()
+        self.image_height = self.image.get_height()
+        
+        self.x_velocity = 0
+        self.y_velocity = 0
+        self.velocity = 0
+        
+        self.rect = self.image.get_rect()
+        self.rect.x = position[0]
+        self.rect.y = position[1]
         
         self.screen = Config.SCREEN
+        self.gravity = Config.GRAVITY
+        
+    def draw(self):
+        self.screen.blit(self.image, self.rect)
+    
+    def spaceship_boundaries(self):
+        if self.rect.x > Config.SCREEN_WIDTH:
+            self.x_velocity = -1 
+        elif self.rect.x < 0:
+            self.x_velocity = 1
+        elif self.rect.y > Config.SCREEN_HEIGHT:
+            self.y_velocity = -1
+        elif self.rect.y < 0:   
+            self.y_velocity = 1
+    
+    def move(self, dx, dy):
+        self.rect.x += dx
+        self.rect.y += dy
+    
+    def thrust(self): # motion upwards of the spaceship
+        self.y_velocity = -self.velocity
+    
+    def move_right(self): 
+        self.x_velocity = self.velocity
+    
+    def move_left(self):
+        self.x_velocity = -self.velocity
+    
+    def update(self):
+        self.move(self.x_velocity, self.y_velocity)
+        self.spaceship_boundaries()
+        
+        self.y_velocity += self.gravity
+        self.x_velocity = 0
+        
+        self.draw()
+
+""" _______PLATFORMS_______ """
+
+
+
+""" _______OBSTACLES_______ """
+
+
+
+
+""" _______GAME_______ """
+
+class Game:
+    def __init__(self):
+        self.clock = pygame.time.Clock()
+        
+        # Spaceships
+        self.player1_spaceship = Spaceships(Config.PLAYER1_IMG, Config.START_POSITION_PLAYER1)
+        self.spaceship_group = pygame.sprite.Group()
+        self.spaceship_group.add(self.player1_spaceship)
+    
+    def draw(self):
+        Config.SCREEN.blit(Config.BACKGROUND, (0, 0))
+        self.player1_spaceship.draw()
+        
+        pygame.display.update()
+        
+    def event_handler(self):
+        keys = pygame.key.get_pressed()
+        
+        if keys[pygame.K_UP]:
+            self.player1_spaceship.thrust()
+        if keys[pygame.K_RIGHT]:
+            self.player1_spaceship.move_right()
+        if keys[pygame.K_LEFT]:
+            self.player1_spaceship.move_left()
+    
+    def update(self):
+        self.player1_spaceship.update()
+
+        
+    
+    def game_loop(self):
+        run = True
+        while run:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+                    break
+
+            self.clock.tick(Config.FPS)
+            
+            self.event_handler()
+            self.update()
+            self.draw()
+            
+            pygame.display.update()
+
+
+
+if __name__ == "__main__":
+    pygame.init()
+    game = Game()
+    game.game_loop()
+
         
         
         
