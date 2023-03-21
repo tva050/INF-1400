@@ -1,24 +1,22 @@
 import pygame 
-from pygame import Vector2 as Vec2
-
-pygame.init()
-
-SCREEN_WIDTH = 900
-SCREEN_HEIGHT = 600
-FPS = 60
+""" 
+class Config:
+    SCREEN_WIDTH = 900
+    SCREEN_HEIGHT = 600
+    FPS = 60
 
 
-SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0)
+    SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0)
 
-BACKGROUND = pygame.image.load("assets\space_background.jpg")
-BACKGROUND = pygame.transform.scale(BACKGROUND, (SCREEN_WIDTH, SCREEN_HEIGHT)).convert() 
-    
-PLAYER1_IMG = pygame.image.load("assets\spaceship1.png")
-PLAYER1_IMG = pygame.transform.scale(PLAYER1_IMG, (90/1.5, 64/1.5)).convert_alpha()
+    BACKGROUND = pygame.image.load("assets\space_background.jpg")
+    BACKGROUND = pygame.transform.scale(BACKGROUND, (SCREEN_WIDTH, SCREEN_HEIGHT)).convert() 
 
-x, y = 900/2, 600/2
-PLAYER_VEL = 5
-GRAVITY = 10
+    PLAYER1_IMG = pygame.image.load("assets\spaceship1.png")
+    PLAYER1_IMG = pygame.transform.scale(PLAYER1_IMG, (90/1.5, 64/1.5)).convert_alpha()
+
+    x, y = 900/2, 600/2
+    PLAYER_VEL = 5
+    GRAVITY = 10
 
 class player(pygame.sprite.Sprite):
     def __init__(self, position, speed):
@@ -53,7 +51,7 @@ class player(pygame.sprite.Sprite):
             self.direction = "right"
     
     def loop(self, fps):
-        self.y_vel += min(1, (self.fall_count / fps) * GRAVITY)
+        self.y_vel += min(1, (self.fall_count / fps) * Config.GRAVITY)
         self.move(self.x_vel, self.y_vel)
         
         self.fall_count += 1
@@ -61,37 +59,50 @@ class player(pygame.sprite.Sprite):
     def draw(self, screen):
         screen.blit(self.image, self.rect)
         
+        
 def handle_move(player):
     keys = pygame.key.get_pressed()
     
     player.x_vel = 0
     if keys[pygame.K_LEFT]:
-        player.move_left(PLAYER_VEL)
+        player.move_left(Config.PLAYER_VEL)
     if keys[pygame.K_RIGHT]:
-        player.move_rigth(PLAYER_VEL)
+        player.move_rigth(Config.PLAYER_VEL)
+    if keys[pygame.K_UP]:
+        player.y_vel = -Config.PLAYER_VEL
+        player.fall_count = 0
     
          
 
-player = player((x, y), (0, 0))
+player = player((Config.x, Config.y), (0, 0))
         
 def game_loop():
     clock = pygame.time.Clock()
     run = True
     while run:
-        clock.tick(FPS)
+        clock.tick(Config.FPS)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
                 break
             
-        SCREEN.blit(BACKGROUND, (0, 0))
-        player.loop(FPS) 
+        Config.SCREEN.blit(Config.BACKGROUND, (0, 0))
+        player.loop(Config.FPS) 
         handle_move(player)
-        player.draw(SCREEN)
+        player.draw(Config.SCREEN)
       
         pygame.display.update()
     
     pygame.quit()
 
 if __name__ == "__main__":
+    pygame.init()
     game_loop()
+     """
+    
+""" _______CONFIG_______ """
+
+class 
+        
+        
+        

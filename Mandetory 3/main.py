@@ -33,9 +33,10 @@ class Game:
         self.obstacle_group = pygame.sprite.Group()
         for obstacle in self.obstacle_1, self.obstacle_2, self.obstacle_3, self.obstacle_4, self.obstacle_5:
             self.obstacle_group.add(obstacle)
-        
 
-    
+
+
+
     def game_loop(self):
         while True:
             for event in pygame.event.get():
