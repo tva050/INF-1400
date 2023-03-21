@@ -9,7 +9,6 @@ class Config():
      - Amount of gravity 
      - Amount of starting fuel
     """
-    pygame.init()
     pygame.display.set_caption("Shadow of the Moon")
     
     # Screen specifications
