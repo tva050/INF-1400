@@ -1,4 +1,7 @@
 import pygame 
+import numpy as np
+from pygame import Vector2 as Vec2
+import math
 
 """ _______CONFIG_______ """
 
@@ -23,6 +26,7 @@ class Config:
     
     SPACESHIP_SIZE = (90/1.5, 64/1.5)
     PLAYER_VELOCITY = 5
+    ROTATION_SPEED = 5
     
     # Platforms
     PLATFORM_IMG = "assets\platform.png"
@@ -44,7 +48,7 @@ class Config:
     
     # Setting 
     GRAVITY = 10
-
+    ANGLE = np.pi/2
 
 """ _______SPACESHIPS_______ """
 class Spaceships(pygame.sprite.Sprite):
@@ -55,6 +59,7 @@ class Spaceships(pygame.sprite.Sprite):
         self.image_width = self.image.get_width()
         self.image_height = self.image.get_height()
         
+        """ 
         self.x_velocity = 0
         self.y_velocity = 0
         self.velocity = 0
@@ -62,44 +67,81 @@ class Spaceships(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = position[0]
         self.rect.y = position[1]
+        """
+        
+        self.x_velocity, self.y_velocity = Vec2(0, 0)
+        self.position = Vec2(position)
+        self.angle = self.x_velocity, self.y_velocity
         
         self.screen = Config.SCREEN
         self.gravity = Config.GRAVITY
         
     def draw(self):
-        self.screen.blit(self.image, self.rect)
+        self.screen.blit(self.image, self.position)
     
     def spaceship_boundaries(self):
-        if self.rect.x > Config.SCREEN_WIDTH:
-            self.x_velocity = -1 
-        elif self.rect.x < 0:
+        if self.position.x  > Config.SCREEN_WIDTH:
+            self.x_velocity = -1
+        elif self.position.x < 0:
             self.x_velocity = 1
-        elif self.rect.y > Config.SCREEN_HEIGHT:
+        elif self.position.y > Config.SCREEN_HEIGHT - self.image_height:
             self.y_velocity = -1
-        elif self.rect.y < 0:   
+        elif self.position.y < 0:   
             self.y_velocity = 1
     
+    """ def move(self, dx, dy):
+        self.position.x += dx 
+        self.position.y += dy """
+        
     def move(self, dx, dy):
-        self.rect.x += dx
-        self.rect.y += dy
+        self.position.x += dx
+        self.position.y += dy
     
-    def thrust(self): # motion upwards of the spaceship
-        self.y_velocity = -self.velocity
+    def rotate(self):
+        angle = math.degrees(-math.atan2(self.y_velocity, self.x_velocity))
+        rotated_image = pygame.transform.rotate(self.image, angle)
+        new_rect = rotated_image.get_rect(center=self.image.get_rect(topleft=self.position).center)
+        return rotated_image, new_rect
     
-    def move_right(self): 
-        self.x_velocity = self.velocity
-    
-    def move_left(self):
-        self.x_velocity = -self.velocity
+    def thrust(self, velocity):
+        self.y_velocity = -velocity
+    def move_right(self, velocity):
+        self.x_velocity = velocity 
+    def move_left(self, velocity):
+        self.x_velocity = -velocity  
     
     def update(self):
+        rotated_image, new_rect = self.rotate()
         self.move(self.x_velocity, self.y_velocity)
         self.spaceship_boundaries()
         
-        self.y_velocity += self.gravity
+        self.y_velocity += min(1, self.gravity)
+        self.x_velocity = 0
+    
+        self.draw()
+        
+    
+    """ def thrust(self, velocity): # motion upwards of the spaceship
+        self.y_velocity = -velocity * np.sin(Config.ANGLE)
+    
+    def move_right(self, velocity): 
+        self.x_velocity = velocity * np.cos(Config.ANGLE)
+    
+    def move_left(self, velocity):
+        self.x_velocity = -velocity * np.cos(Config.ANGLE) """
+    
+        
+        
+        
+    
+    """ def update(self):
+        self.move(self.x_velocity, self.y_velocity)
+        self.spaceship_boundaries()
+        
+        self.y_velocity += min(1, self.gravity) 
         self.x_velocity = 0
         
-        self.draw()
+        self.draw() """
 
 """ _______PLATFORMS_______ """
 
@@ -118,12 +160,16 @@ class Game:
         
         # Spaceships
         self.player1_spaceship = Spaceships(Config.PLAYER1_IMG, Config.START_POSITION_PLAYER1)
+        self.player2_spaceship = Spaceships(Config.PLAYER2_IMG, Config.START_POSITION_PLAYER2)
+        
         self.spaceship_group = pygame.sprite.Group()
         self.spaceship_group.add(self.player1_spaceship)
+        self.spaceship_group.add(self.player2_spaceship)
     
     def draw(self):
         Config.SCREEN.blit(Config.BACKGROUND, (0, 0))
         self.player1_spaceship.draw()
+        self.player2_spaceship.draw()
         
         pygame.display.update()
         
@@ -131,15 +177,23 @@ class Game:
         keys = pygame.key.get_pressed()
         
         if keys[pygame.K_UP]:
-            self.player1_spaceship.thrust()
+            self.player1_spaceship.thrust(Config.PLAYER_VELOCITY)
         if keys[pygame.K_RIGHT]:
-            self.player1_spaceship.move_right()
+            self.player1_spaceship.move_right(Config.PLAYER_VELOCITY)
         if keys[pygame.K_LEFT]:
-            self.player1_spaceship.move_left()
+            self.player1_spaceship.move_left(Config.PLAYER_VELOCITY)
+        
+        if keys[pygame.K_w]:
+            self.player2_spaceship.thrust(Config.PLAYER_VELOCITY)
+        if keys[pygame.K_d]:
+            self.player2_spaceship.move_right(Config.PLAYER_VELOCITY)
+        if keys[pygame.K_a]:
+            self.player2_spaceship.move_left(Config.PLAYER_VELOCITY)
+        
     
     def update(self):
         self.player1_spaceship.update()
-
+        self.player2_spaceship.update()
         
     
     def game_loop(self):
