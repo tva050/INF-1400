@@ -51,11 +51,6 @@ class Spaceships(pygame.sprite.Sprite):
         self.position.x += dx
         self.position.y += dy
     
-    def rotate(self):
-        angle = math.degrees(-math.atan2(self.y_velocity, self.x_velocity))
-        rotated_image = pygame.transform.rotate(self.image, angle)
-        new_rect = rotated_image.get_rect(center=self.image.get_rect(topleft=self.position).center)
-        return rotated_image, new_rect
     
     def thrust(self, velocity):
         self.y_velocity = -velocity
@@ -65,7 +60,6 @@ class Spaceships(pygame.sprite.Sprite):
         self.x_velocity = -velocity  
     
     def update(self):
-        rotated_image, new_rect = self.rotate()
         self.move(self.x_velocity, self.y_velocity)
         self.spaceship_boundaries()
         
@@ -73,6 +67,7 @@ class Spaceships(pygame.sprite.Sprite):
         self.x_velocity = 0
     
         self.draw()
+        
         
 
         

@@ -1,6 +1,5 @@
 import pygame
 from config import Config
-import random
 
 class Obstacles(pygame.sprite.Sprite):
     def __init__(self ,x_position, y_position): 
