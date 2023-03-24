@@ -26,7 +26,7 @@ class Spaceships(pygame.sprite.Sprite):
         self.time = self.clock.tick(30)/1000 # Time in seconds
         
         self.screen = Config.SCREEN
-        self.gravity = Config.GRAVITY
+        self.gravity = Config.GRAVITY # Gravity
         
         #self.fired_beam_state = False
         self.shoot_cooldown = 0
@@ -51,7 +51,8 @@ class Spaceships(pygame.sprite.Sprite):
         self.rect.y += dy + self.acceleration * self.time
         
     def thrust(self, velocity):
-        self.velocity.y = -velocity
+        self.velocity.y = -velocity 
+        
     def move_right(self, velocity):
         self.velocity.x = velocity 
     def move_left(self, velocity):
