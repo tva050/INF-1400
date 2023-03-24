@@ -7,12 +7,15 @@ import math
 
 class Config:
     pygame.display.set_caption("Mayhem")
+    pygame.font.init()
     
     SCREEN_WIDTH = 900
     SCREEN_HEIGHT = 600
     FPS = 60 # Frames per second
     
     SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0)
+    
+    SCORE_FONT = pygame.font.SysFont("comicsans", 40)
     
     # Background
     BACKGROUND = pygame.image.load("assets\space_background.jpg")
@@ -34,7 +37,10 @@ class Config:
     
     BEAM_VELOCITY = 7
     MAX_BEAMS = 3
-   
+    BEAM_COUNT = 100
+    
+    PLAYER1_HIT = pygame.USEREVENT + 1
+    PLAYER2_HIT = pygame.USEREVENT + 2
     
     # Platforms
     PLATFORM_IMG = "assets\platform.png"
@@ -55,8 +61,9 @@ class Config:
     OBSTACLE_5_POS = (SCREEN_WIDTH-650, SCREEN_HEIGHT-500)
     
     # Setting 
-    GRAVITY = 10
-    ANGLE = np.pi/2
+    GRAVITY = 0.2
+    SCORE = 0
+    
 
 """ _______SPACESHIPS_______ """
 class Spaceships(pygame.sprite.Sprite):
@@ -66,11 +73,11 @@ class Spaceships(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, Config.SPACESHIP_SIZE).convert_alpha()
         self.image_width = self.image.get_width()
         self.image_height = self.image.get_height()
+        self.mask = pygame.mask.from_surface(self.image)
         
         self.start_pos = position
-        
         self.velocity = Vec2(0, 0)
-        self.acceleration = 0 
+        self.acceleration = 0.5
         
         self.rect = self.image.get_rect()
         self.rect.x = position[0]
@@ -85,6 +92,7 @@ class Spaceships(pygame.sprite.Sprite):
         
         #self.fired_beam_state = False
         self.shoot_cooldown = 0
+        self.beams = pygame.sprite.Group()
         
         
     def draw(self):
@@ -102,21 +110,21 @@ class Spaceships(pygame.sprite.Sprite):
             self.velocity.y = 1
         
     def move(self, dx, dy):
-        self.rect.x += dx + self.acceleration * self.time
-        self.rect.y += dy + self.acceleration * self.time
+        self.rect.x += dx
+        self.rect.y += dy 
         
     def thrust(self, velocity):
-        self.velocity.y = -velocity
+        self.velocity.y = -velocity 
     def move_right(self, velocity):
-        self.velocity.x = velocity 
+        self.velocity.x = velocity + self.acceleration * self.time
     def move_left(self, velocity):
-        self.velocity.x = -velocity
+        self.velocity.x = -velocity + self.acceleration * self.time
     
     def update(self):
         self.move(self.velocity.x, self.velocity.y)
         self.spaceship_boundaries() 
         
-        self.velocity.y += min(1, self.gravity)
+        self.velocity.y += self.gravity
         self.velocity.x = 0
         
         self.draw()
@@ -129,8 +137,7 @@ class Spaceships(pygame.sprite.Sprite):
         self.rect.y = self.start_pos[1]
         self.velocity = Vec2(0, 0)
         self.acceleration = 0
-        self.rect.centerx = self.start_pos[0]
-        self.rect.centery = self.start_pos[1]
+        self.shoot_cooldown = 0
     
         
 """ _______LASER_BEAM_______ """
@@ -140,7 +147,7 @@ class LaserBeam(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.image.load(image)
         self.image = pygame.transform.scale(self.image, (20, 20)).convert_alpha()
-
+        self.mask = pygame.mask.from_surface(self.image)
         #self.max_beams = Config.MAX_BEAMS
         self.velocity = Config.BEAM_VELOCITY
     
@@ -161,9 +168,13 @@ class LaserBeam(pygame.sprite.Sprite):
             self.kill()
         if self.rect.x < 0 or self.rect.x > Config.SCREEN_WIDTH:
             self.kill()
+            
     def update(self):
         self.move()
         self.draw()
+        
+    def check_collision(self, sprite):
+        return pygame.sprite.collide_mask(self, sprite)
 
 """ _______PLATFORMS_______ """
 
@@ -172,9 +183,13 @@ class Platforms(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.image.load(Config.PLATFORM_IMG)
         self.image = pygame.transform.scale(self.image, (81.9, 64)).convert_alpha()
+        
+        self.mask = pygame.mask.from_surface(self.image)
+        
         self.rect = self.image.get_rect()
         self.rect.center = [pos_x, pos_y]
         self.screen = Config.SCREEN
+
     
     def draw(self):
         self.screen.blit(self.image, self.rect)
@@ -187,8 +202,11 @@ class Obstacles(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.image.load(image)
         self.image = pygame.transform.scale(self.image, Config.OBSTACLE_SIZE).convert_alpha()
+        self.mask = pygame.mask.from_surface(self.image)
+        
         self.rect = self.image.get_rect()
         self.rect.center = [position[0], position[1]]
+        
         self.screen = Config.SCREEN
     
     def draw(self):
@@ -209,13 +227,14 @@ class Game:
         for spaceship in self.player1_spaceship, self.player2_spaceship:
             self.spaceship_group.add(spaceship)
         
+        # Platforms
         self.player1_platform = Platforms(Config.PLATFORM_PLAYER1_POSITION[0], Config.PLATFORM_PLAYER1_POSITION[1])
         self.player2_platform = Platforms(Config.PLATFORM_PLAYER2_POSITION[0], Config.PLATFORM_PLAYER2_POSITION[1])
         self.platform_group = pygame.sprite.Group()
         for platform in self.player1_platform, self.player2_platform:
             self.platform_group.add(platform)
             
-       
+        # Obstacles
         self.obstacle1 = Obstacles(Config.OBSTACLE, Config.OBSTACLE_1_POS)
         self.obstacle2 = Obstacles(Config.OBSTACLE, Config.OBSTACLE_2_POS)
         self.obstacle3 = Obstacles(Config.OBSTACLE, Config.OBSTACLE_3_POS)
@@ -224,9 +243,9 @@ class Game:
         self.obstacle_group = pygame.sprite.Group()
         for obstacle in self.obstacle1, self.obstacle2, self.obstacle3, self.obstacle4, self.obstacle5:
             self.obstacle_group.add(obstacle)
-        
-
-       
+    
+            
+    
     def multiple_shoot(self, spaceship):
         if spaceship == self.player1_spaceship:
             if self.player1_spaceship.shoot_cooldown == 0:
@@ -238,21 +257,8 @@ class Game:
                 self.player2_spaceship.shoot_cooldown = 20
                 player2_laser_beam = LaserBeam(Config.PLAYER2_BEAM, (spaceship.rect.centerx, spaceship.rect.top))
                 self.spaceship_group.add(player2_laser_beam)
-        
-        
-        
-        
-    def draw(self):
-        Config.SCREEN.blit(Config.BACKGROUND, (0, 0))
-        
-        self.spaceship_group.draw(Config.SCREEN)
-        self.platform_group.draw(Config.SCREEN)
-        self.obstacle_group.draw(Config.SCREEN)
-    
-        pygame.display.update()
-    
-        
-    def event_handler(self):
+                
+    def keys_handler(self):
         keys = pygame.key.get_pressed()
         
         # Player 1 controls
@@ -277,16 +283,24 @@ class Game:
             self.multiple_shoot(self.player1_spaceship)
         if keys[pygame.K_RCTRL]: #and not self.player2_spaceship.fired_beam_state:
             self.multiple_shoot(self.player2_spaceship)
-           
+    
+    # players absorb each others laser beams         
+    
+    
+    def collison_between_spaceships(self):
+        if pygame.sprite.collide_mask(self.player1_spaceship, self.player2_spaceship):
+            self.player1_spaceship.reset()
+            self.player2_spaceship.reset()
         
-            
+                   
     def collision_platform(self):
-        if pygame.sprite.collide_rect(self.player1_spaceship, self.player1_platform):
+        if pygame.sprite.collide_mask(self.player1_spaceship, self.player1_platform):
             self.player1_spaceship.velocity.y = 0
-            self.player1_spaceship.rect.bottom = self.player1_platform.rect.top
-        if pygame.sprite.collide_rect(self.player2_spaceship, self.player2_platform):
+            self.player1_spaceship.rect.bottom = self.player1_platform.rect.top 
+        if pygame.sprite.collide_mask(self.player2_spaceship, self.player2_platform):
             self.player2_spaceship.velocity.y = 0
             self.player2_spaceship.rect.bottom = self.player2_platform.rect.top
+        
     
     def collision_obstacles(self):
         for obstacle in self.obstacle_group:
@@ -294,15 +308,34 @@ class Game:
                 self.player1_spaceship.reset()
             if pygame.sprite.collide_rect(self.player2_spaceship, obstacle):
                 self.player2_spaceship.reset()
+        # laserbeam collision with obstacles -> destroy laserbeam (dokill = False, dokill2 = True)
+        if pygame.sprite.groupcollide(self.obstacle_group, self.spaceship_group, False , True, pygame.sprite.collide_mask):
+            pass
+                
+    def draw_score(self):
+        score_text = Config.SCORE_FONT.render(f"Score: {self.score}", 1, (255, 255, 255))
+        Config.SCREEN.blit(score_text, (Config.SCREEN_WIDTH - score_text.get_width() - 10, 10))
             
     def collision(self):
         self.collision_platform()
         self.collision_obstacles()
-    
+        self.collison_between_spaceships()
+        self.collision_laser_beam()
+       
+         
     def update(self):
         self.spaceship_group.update()
         self.platform_group.update()
         self.obstacle_group.update()
+        
+    def draw(self):
+        Config.SCREEN.blit(Config.BACKGROUND, (0, 0))
+        
+        self.spaceship_group.draw(Config.SCREEN)
+        self.platform_group.draw(Config.SCREEN)
+        self.obstacle_group.draw(Config.SCREEN)
+    
+        pygame.display.update()
         
         
     def game_loop(self):
@@ -319,7 +352,7 @@ class Game:
 
             self.clock.tick(Config.FPS)
             
-            self.event_handler()
+            self.keys_handler()
             self.collision()
             self.update()
             self.draw()
