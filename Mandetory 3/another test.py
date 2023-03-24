@@ -37,10 +37,7 @@ class Config:
     
     BEAM_VELOCITY = 7
     MAX_BEAMS = 3
-    BEAM_COUNT = 100
     
-    PLAYER1_HIT = pygame.USEREVENT + 1
-    PLAYER2_HIT = pygame.USEREVENT + 2
     
     # Platforms
     PLATFORM_IMG = "assets\platform.png"
@@ -83,7 +80,6 @@ class Spaceships(pygame.sprite.Sprite):
         self.rect.x = position[0]
         self.rect.y = position[1]
         
-    
         self.clock = pygame.time.Clock()
         self.time = self.clock.tick(30)/1000 # Time in seconds
         
@@ -92,12 +88,9 @@ class Spaceships(pygame.sprite.Sprite):
         
         #self.fired_beam_state = False
         self.shoot_cooldown = 0
-        self.beams = pygame.sprite.Group()
-        
         
     def draw(self):
         self.screen.blit(self.image, self.rect)
-    
     
     def spaceship_boundaries(self):
         if self.rect.x  > Config.SCREEN_WIDTH:
@@ -148,9 +141,7 @@ class LaserBeam(pygame.sprite.Sprite):
         self.image = pygame.image.load(image)
         self.image = pygame.transform.scale(self.image, (20, 20)).convert_alpha()
         self.mask = pygame.mask.from_surface(self.image)
-        #self.max_beams = Config.MAX_BEAMS
         self.velocity = Config.BEAM_VELOCITY
-    
          
         self.x, self.y = position
 
@@ -158,6 +149,8 @@ class LaserBeam(pygame.sprite.Sprite):
         self.rect.center = (self.x, self.y)
 
         self.screen = Config.SCREEN
+        
+        self.remove=False
     
     def draw(self):
         self.screen.blit(self.image, self.rect) 
@@ -173,8 +166,10 @@ class LaserBeam(pygame.sprite.Sprite):
         self.move()
         self.draw()
         
-    def check_collision(self, sprite):
-        return pygame.sprite.collide_mask(self, sprite)
+    def collision(self, sprite):
+        if pygame.Rect.colliderect(self.rect, sprite.rect):
+
+            return True
 
 """ _______PLATFORMS_______ """
 
@@ -244,7 +239,7 @@ class Game:
         for obstacle in self.obstacle1, self.obstacle2, self.obstacle3, self.obstacle4, self.obstacle5:
             self.obstacle_group.add(obstacle)
     
-            
+
     
     def multiple_shoot(self, spaceship):
         if spaceship == self.player1_spaceship:
@@ -284,8 +279,6 @@ class Game:
         if keys[pygame.K_RCTRL]: #and not self.player2_spaceship.fired_beam_state:
             self.multiple_shoot(self.player2_spaceship)
     
-    # players absorb each others laser beams         
-    
     
     def collison_between_spaceships(self):
         if pygame.sprite.collide_mask(self.player1_spaceship, self.player2_spaceship):
@@ -311,16 +304,12 @@ class Game:
         # laserbeam collision with obstacles -> destroy laserbeam (dokill = False, dokill2 = True)
         if pygame.sprite.groupcollide(self.obstacle_group, self.spaceship_group, False , True, pygame.sprite.collide_mask):
             pass
-                
-    def draw_score(self):
-        score_text = Config.SCORE_FONT.render(f"Score: {self.score}", 1, (255, 255, 255))
-        Config.SCREEN.blit(score_text, (Config.SCREEN_WIDTH - score_text.get_width() - 10, 10))
+            
             
     def collision(self):
         self.collision_platform()
         self.collision_obstacles()
         self.collison_between_spaceships()
-        self.collision_laser_beam()
        
          
     def update(self):

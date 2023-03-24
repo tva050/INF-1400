@@ -25,13 +25,9 @@ class Game:
             self.platform_group.add(platform)
             
        
-        self.obstacle1 = Obstacles(Config.OBSTACLE, Config.OBSTACLE_1_POS)
-        self.obstacle2 = Obstacles(Config.OBSTACLE, Config.OBSTACLE_2_POS)
-        self.obstacle3 = Obstacles(Config.OBSTACLE, Config.OBSTACLE_3_POS)
-        self.obstacle4 = Obstacles(Config.OBSTACLE, Config.OBSTACLE_4_POS)
-        self.obstacle5 = Obstacles(Config.OBSTACLE, Config.OBSTACLE_5_POS)
         self.obstacle_group = pygame.sprite.Group()
-        for obstacle in self.obstacle1, self.obstacle2, self.obstacle3, self.obstacle4, self.obstacle5:
+        for i in range(len(Config.OBSTACLE_POSITIONS)):
+            obstacle = Obstacles(Config.OBSTACLE, Config.OBSTACLE_POSITIONS[i])
             self.obstacle_group.add(obstacle)
         
 

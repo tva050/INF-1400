@@ -36,7 +36,7 @@ class Spaceships(pygame.sprite.Sprite):
         self.screen.blit(self.image, self.rect)
     
     
-    def spaceship_boundaries(self):
+    """ def spaceship_boundaries(self):
         if self.rect.x  > Config.SCREEN_WIDTH:
             self.velocity.x = -1
         elif self.rect.x < 0:
@@ -44,7 +44,7 @@ class Spaceships(pygame.sprite.Sprite):
         elif self.rect.y > Config.SCREEN_HEIGHT - self.image_height:
             self.velocity.y = -1
         elif self.rect.y < 0:   
-            self.velocity.y = 1
+            self.velocity.y = 1 """
         
     def move(self, dx, dy):
         self.rect.x += dx + self.acceleration * self.time
@@ -60,7 +60,7 @@ class Spaceships(pygame.sprite.Sprite):
     
     def update(self):
         self.move(self.velocity.x, self.velocity.y)
-        self.spaceship_boundaries() 
+        #self.spaceship_boundaries() 
         
         self.velocity.y += min(1, self.gravity)
         self.velocity.x = 0
