@@ -15,8 +15,8 @@ class Config:
     
     SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0)
     
-    SCORE_FONT = pygame.font.Font("assets\OriginTech personal use.ttf", 40)
-    WINNER_FONT = pygame.font.SysFont("STENCIL", 100)
+    FONT = pygame.font.Font("assets\OriginTech personal use.ttf", 40)
+  
     
     # Background
     BACKGROUND = pygame.image.load("assets\space_background.jpg")
@@ -73,6 +73,9 @@ class Config:
     SCORE_PANEL = pygame.image.load("assets\score_panel.png")
     SCORE_PANEL = pygame.transform.scale(SCORE_PANEL, (820/4, 280/5)).convert_alpha()
     SCORE_PANEL_POS = (SCREEN_WIDTH/2-SCORE_PANEL.get_width()/2, 0)
+    GREEN_WON = pygame.image.load("assets\green_wins.png")
+    PURPLE_WON = pygame.image.load("assets\purple_wins.png")
+    WON_PANEL_POS = (SCREEN_WIDTH/2-GREEN_WON.get_width()/2, SCREEN_HEIGHT/2-GREEN_WON.get_height()/2)
     
     # Setting 
     GRAVITY = FPS/5000
