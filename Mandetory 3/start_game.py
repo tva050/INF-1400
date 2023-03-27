@@ -1,12 +1,8 @@
 """ 
-Wirten by: Trym Varland
+Writen by: Trym Varland
 """
-
-import pygame
-from game import Game
+from screens import Screens
 
 if __name__ == "__main__":
-    pygame.init()
-    game = Game()
-    game.game_loop()
-
+    
+    start = Screens.main_manu(Screens)
