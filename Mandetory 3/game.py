@@ -363,8 +363,7 @@ class Game:
             self.clock.tick(FPS)
             
             self.event_handler()
-            self.shootkeys(self.player1_spaceship)
-            self.shootkeys(self.player2_spaceship)
+            self.shoot()
             self.collision()
             self.update()
             self.draw()
