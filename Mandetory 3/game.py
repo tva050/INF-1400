@@ -1,5 +1,7 @@
+""" 
+Wirten by: Trym Varland
+"""
 import pygame
-
 from config import Config
 from spaceships import Spaceships
 from laserbeam import LaserBeam
@@ -10,6 +12,9 @@ from obstacles import Obstacles
 """ _______GAME_______ """
 
 class Game:
+    """ 
+    Class which is the main class of the game. It contains the game loop and the event handler.
+    """
     def __init__(self):
         self.clock = pygame.time.Clock()
     
@@ -50,6 +55,7 @@ class Game:
         
         # Player 2 controls
         if keys[pygame.K_UP] and self.player2_spaceship.rect.y > 0:
+            self.player2_spaceship.image = pygame.transform.rotate(Config.PLAYER2_THRUST, self.player2_spaceship.angle)
             self.player2_spaceship.thrust()
         if keys[pygame.K_RIGHT] and self.player2_spaceship.rect.x < Config.SCREEN_WIDTH - self.player2_spaceship.image_width:
             self.player2_spaceship.image, self.player2_spaceship.rect = self.player2_spaceship.move_right(Config.PLAYER2_IMG_LOADED)
@@ -57,7 +63,7 @@ class Game:
             self.player2_spaceship.image, self.player2_spaceship.rect = self.player2_spaceship.move_left(Config.PLAYER2_IMG_LOADED)
         if keys[pygame.K_UP] == False:
             self.player2_spaceship.image = pygame.transform.rotate(Config.PLAYER2_IMG_LOADED, self.player2_spaceship.angle)
-        
+            
         # Shoot
     def shootkeys(self, spaceship):
         keys = pygame.key.get_pressed()
@@ -84,7 +90,6 @@ class Game:
         if pygame.sprite.collide_mask(self.player1_spaceship, self.player2_spaceship):
             self.player1_spaceship.reset() 
             self.player2_spaceship.reset()
-            
             self.player1_spaceship.score -= 1
             self.player2_spaceship.score -= 1
             
@@ -103,7 +108,6 @@ class Game:
     def collision_obstacles(self):
         for obstacle in self.obstacle_group:
             if pygame.sprite.collide_mask(self.player1_spaceship, obstacle):
-                print("collision")
                 self.player1_spaceship.reset()
                 self.player1_spaceship.score -= 1
             if pygame.sprite.collide_mask(self.player2_spaceship, obstacle):
@@ -123,16 +127,28 @@ class Game:
         Config.SCREEN.blit(Config.SCORE_PANEL, Config.SCORE_PANEL_POS)
         Config.SCREEN.blit(Config.FONT.render(str(self.player1_spaceship.score), True, (255,255,255)), (Config.SCREEN_WIDTH/2-60, 10))
         Config.SCREEN.blit(Config.FONT.render(str(self.player2_spaceship.score), True, (255,255,255)), (Config.SCREEN_WIDTH/2+50, 10))
-        
+
+    def reset_handler(self):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_SPACE]:
+                self.player1_spaceship.reset()
+                self.player2_spaceship.reset()
+                self.player1_spaceship.score = 0
+                self.player2_spaceship.score = 0
+               
     def draw_winner(self):
         if self.player1_spaceship.score == 1:
             Config.SCREEN.blit(Config.GREEN_WON, (Config.WON_PANEL_POS))
+            self.reset_handler()
         elif self.player2_spaceship.score == 1:
             Config.SCREEN.blit(Config.PURPLE_WON, (Config.WON_PANEL_POS))
+            self.reset_handler()
+        
         # draw a black transparent rectangle behind the winner text
         pygame.display.update()
-        pygame.time.delay(10_000)
         
+    
+            
     def collision(self):
         self.collision_platform()
         self.collision_obstacles()
@@ -158,7 +174,6 @@ class Game:
         self.obstacle_group.draw(Config.SCREEN)  
         self.fuel_bar()  
         self.score()
-        
         pygame.display.update()
         
         
@@ -172,13 +187,15 @@ class Game:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         run = False
-                        break
-                    
-            if self.player1_spaceship.score == 1 or self.player2_spaceship.score == 1:
-                self.draw_winner()
-                break
-            
 
+                        break
+             
+            if self.player1_spaceship.score ==1 or self.player2_spaceship.score == 1:
+                self.draw_winner()
+                self.clock.tick(Config.FPS)
+                continue 
+            
+               
                 
             self.clock.tick(Config.FPS)
             
@@ -189,6 +206,7 @@ class Game:
             self.collision()
             self.update()
             self.draw()
+            
             
             
             pygame.display.update()

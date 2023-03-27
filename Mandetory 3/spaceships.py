@@ -1,3 +1,6 @@
+""" 
+Wirten by: Trym Varland
+"""
 import pygame
 from config import Config
 from pygame import Vector2 as Vec2
@@ -27,6 +30,7 @@ class Spaceships(pygame.sprite.Sprite):
         
         self.screen = Config.SCREEN
         
+    # Writen with help from Håkon Silseth    
     def move(self):
         self.position += self.velocity
         self.velocity += Vec2(0, Config.GRAVITY)
@@ -75,6 +79,7 @@ class Spaceships(pygame.sprite.Sprite):
     def reset(self):
         self.position = Vec2(self.start_pos)
         self.velocity = Vec2(0, 0)
+        self.angle = np.degrees(0)
         self.fuel = Config.MAX_FUEL
         self.rect = self.image.get_rect(center = (self.position.x, self.position.y))
         self.rect.center = self.position

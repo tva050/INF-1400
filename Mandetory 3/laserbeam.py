@@ -1,8 +1,10 @@
+""" 
+Wirten by: Trym Varland
+"""
+
 import pygame
 from pygame import Vector2 as Vec2
 from config import Config
-
-
 
 """ _______LASER_BEAM_______ """
 
@@ -10,7 +12,7 @@ class LaserBeam(pygame.sprite.Sprite):
     def __init__(self, image, position, angle):
         super().__init__()
         self.image = pygame.image.load(image)
-        self.image = pygame.transform.scale(self.image, (20, 20)).convert_alpha()
+        self.image = pygame.transform.scale(self.image, (41, 11)).convert_alpha()
         self.mask = pygame.mask.from_surface(self.image)
         self.velocity = Config.BEAM_VELOCITY
     

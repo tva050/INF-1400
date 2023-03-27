@@ -1,3 +1,7 @@
+""" 
+Wirten by: Trym Varland
+"""
+
 import pygame
 from game import Game
 
