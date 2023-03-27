@@ -6,7 +6,7 @@ https://github.com/baraltech/Menu-System-PyGame/blob/551c6f3262cdb0d91b0803fa4a1
 import pygame
 from config import *
 from bottom_ import Bottom
-from main_game import Game
+from game import Game
 
 class Screens:
     """ 

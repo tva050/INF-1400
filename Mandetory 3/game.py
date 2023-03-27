@@ -260,11 +260,10 @@ class Game:
         ----------
             None
         """
-        global back_bottom
-        if self.player1_spaceship.score == 1: # If the score of player 1 is 1 then draw the green won panel and reset the game
+        if self.player1_spaceship.score == 5: # If the score of player 1 is 1 then draw the green won panel and reset the game
             SCREEN.blit(GREEN_WON, (WON_PANEL_POS))
             self.reset_handler()
-        elif self.player2_spaceship.score == 1:
+        elif self.player2_spaceship.score == 5:
             SCREEN.blit(PURPLE_WON, (WON_PANEL_POS))
             self.reset_handler()
         pygame.display.update()
@@ -354,7 +353,7 @@ class Game:
                         break
                 
                 
-            if self.player1_spaceship.score == 1 or self.player2_spaceship.score == 1: # If the score of one of the players is a given score then draw the winner
+            if self.player1_spaceship.score == 5 or self.player2_spaceship.score == 5: # If the score of one of the players is a given score then draw the winner
                 self.draw_winner()
                 self.clock.tick(FPS)
                 continue 
