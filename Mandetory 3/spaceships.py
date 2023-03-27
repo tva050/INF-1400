@@ -1,92 +1,80 @@
 import pygame
-from pygame import Vector2 as Vec2
-import math
 from config import Config
+from pygame import Vector2 as Vec2
+import numpy as np
 
-
+""" _______SPACESHIPS_______ """
 class Spaceships(pygame.sprite.Sprite):
-    def __init__(self, image, position):
+    def __init__(self, image, position, speed):
         super().__init__()
         self.image = pygame.image.load(image)
         self.image = pygame.transform.scale(self.image, Config.SPACESHIP_SIZE).convert_alpha()
-        self.image_width = self.image.get_width()
-        self.image_height = self.image.get_height()
+        self.image_width, self.image_height = self.image.get_size()
+        self.mask = pygame.mask.from_surface(self.image)
         
         self.start_pos = position
+        self.velocity = Vec2(speed)
+        self.position = Vec2(position)
+        self.angle = np.degrees(0)
         
-        self.velocity = Vec2(0, 0)
-        self.acceleration = 0 
+        self.rect = self.image.get_rect(center = (self.position.x, self.position.y))
         
-        self.rect = self.image.get_rect()
-        self.rect.x = position[0]
-        self.rect.y = position[1]
+        self.shoot_cooldown = 0
+        self.beams = pygame.sprite.Group()
         
-    
-        self.clock = pygame.time.Clock()
-        self.time = self.clock.tick(30)/1000 # Time in seconds
+        self.fuel = Config.MAX_FUEL
+        self.score = Config.SCORE
         
         self.screen = Config.SCREEN
-        self.gravity = Config.GRAVITY # Gravity
         
-        #self.fired_beam_state = False
-        self.shoot_cooldown = 0
+    def move(self):
+        self.position += self.velocity
+        self.velocity += Vec2(0, Config.GRAVITY)
+        self.rect = self.image.get_rect(center = (self.position.x, self.position.y))
         
+    def thrust(self):
+        if self.fuel > 0:
+            thrust_vector = Vec2(0, Config.THRUST)
+            thrust_vector.rotate_ip(-self.angle+180)
+            self.velocity += thrust_vector
+            self.fuel -= Config.FUEL_CONSUMPTION
         
+    def move_right(self, image):
+        self.angle -= np.degrees(Config.ROTATION_SPEED)
+        rotate_image = pygame.transform.rotate(image, self.angle)
+        rotate_rec = rotate_image.get_rect(center = self.rect.center)
+        return rotate_image, rotate_rec
+    
+    def move_left(self, image):
+        self.angle += np.degrees(Config.ROTATION_SPEED)
+        rotate_image = pygame.transform.rotate(image, self.angle)
+        rotate_rec = rotate_image.get_rect(center = self.rect.center)
+        return rotate_image, rotate_rec
+    
+    def boundaries(self):
+        if self.position.x < 0:
+            self.velocity.x = -self.velocity.x
+        elif self.position.x > Config.SCREEN_WIDTH:
+            self.velocity.x = -self.velocity.x
+        if self.position.y < 0:
+            self.velocity.y = -self.velocity.y
+        elif self.position.y > Config.SCREEN_HEIGHT:
+            self.velocity.y = -self.velocity.y
+        
+    
     def draw(self):
         self.screen.blit(self.image, self.rect)
-    
-    
-    """ def spaceship_boundaries(self):
-        if self.rect.x  > Config.SCREEN_WIDTH:
-            self.velocity.x = -1
-        elif self.rect.x < 0:
-            self.velocity.x = 1
-        elif self.rect.y > Config.SCREEN_HEIGHT - self.image_height:
-            self.velocity.y = -1
-        elif self.rect.y < 0:   
-            self.velocity.y = 1 """
         
-    def move(self, dx, dy):
-        self.rect.x += dx + self.acceleration * self.time
-        self.rect.y += dy + self.acceleration * self.time
-        
-    def thrust(self, velocity):
-        self.velocity.y = -velocity 
-        
-    def move_right(self, velocity):
-        self.velocity.x = velocity 
-    def move_left(self, velocity):
-        self.velocity.x = -velocity
-    
     def update(self):
-        self.move(self.velocity.x, self.velocity.y)
-        #self.spaceship_boundaries() 
-        
-        self.velocity.y += min(1, self.gravity)
-        self.velocity.x = 0
-        
+        self.move()
         self.draw()
-        
+        self.boundaries()
         if self.shoot_cooldown > 0:
             self.shoot_cooldown -= 1
 
     def reset(self):
-        self.rect.x = self.start_pos[0]
-        self.rect.y = self.start_pos[1]
+        self.position = Vec2(self.start_pos)
         self.velocity = Vec2(0, 0)
-        self.acceleration = 0
-        self.rect.centerx = self.start_pos[0]
-        self.rect.centery = self.start_pos[1]
-        
-
-        
-        
-    
-        
-
-    
-
-        
-    
-        
-        
+        self.fuel = Config.MAX_FUEL
+        self.rect = self.image.get_rect(center = (self.position.x, self.position.y))
+        self.rect.center = self.position

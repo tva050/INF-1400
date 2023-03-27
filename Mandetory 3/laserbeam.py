@@ -1,34 +1,35 @@
 import pygame
+from pygame import Vector2 as Vec2
 from config import Config
+
+
 
 """ _______LASER_BEAM_______ """
 
 class LaserBeam(pygame.sprite.Sprite):
-    def __init__(self, image, position):
+    def __init__(self, image, position, angle):
         super().__init__()
         self.image = pygame.image.load(image)
         self.image = pygame.transform.scale(self.image, (20, 20)).convert_alpha()
-
-        #self.max_beams = Config.MAX_BEAMS
+        self.mask = pygame.mask.from_surface(self.image)
         self.velocity = Config.BEAM_VELOCITY
     
-         
-        self.x, self.y = position
-
-        self.rect = self.image.get_rect(center = (self.x, self.y))
-        self.rect.center = (self.x, self.y)
-
+        self.position = Vec2(position)
+        self.speed = Vec2(0, 0)
+        self.angle = angle
+        
+        self.rect = self.image.get_rect(center = (self.position.x, self.position.y))
+        
         self.screen = Config.SCREEN
-    
+        
     def draw(self):
         self.screen.blit(self.image, self.rect) 
     
+    # Move the beam in the direction of the spaceship 
     def move(self):
-        self.rect.y -= self.velocity 
-        if self.rect.y < 0 or self.rect.y > Config.SCREEN_HEIGHT:
-            self.kill()
-        if self.rect.x < 0 or self.rect.x > Config.SCREEN_WIDTH:
-            self.kill()
+        self.position += Vec2(self.velocity, 0).rotate(-self.angle-90)
+        self.rect = self.image.get_rect(center = (self.position.x, self.position.y))
+        
     def update(self):
         self.move()
         self.draw()
