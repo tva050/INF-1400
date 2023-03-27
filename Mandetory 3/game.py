@@ -1,5 +1,9 @@
 """ 
 Writen by: Trym Varland
+
+module:: game.py
+    This module contains the Game class, which is the main class of the game. 
+    It contains the game loop and the event handler.
 """
 import pygame
 from config import *

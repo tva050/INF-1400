@@ -1,6 +1,9 @@
 """ 
 This is made mostly for fun, so alot of the code is from:
 https://github.com/baraltech/Menu-System-PyGame/blob/551c6f3262cdb0d91b0803fa4a1beb8136c90bc1/main.py#L40
+
+module:: screens.py
+    This module contains the Screens class. This class is used to create the screens for the game.
 """
 
 import pygame

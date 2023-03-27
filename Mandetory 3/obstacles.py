@@ -1,5 +1,8 @@
 """ 
 Writen by: Trym Varland
+
+module:: obstacles.py 
+    This module contains the Obstacles class.
 """
 import pygame
 from config import *

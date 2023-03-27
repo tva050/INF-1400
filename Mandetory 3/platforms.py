@@ -1,5 +1,8 @@
 """ 
 Writen by: Trym Varland
+
+module:: platforms.py
+    This module contains the Platforms class. This class is used to create the platforms for the game.
 """
 
 import pygame

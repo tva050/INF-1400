@@ -1,5 +1,8 @@
 """ 
 Writen by: Trym Varland
+
+module:: laserbeam.py
+    This module contains the LaserBeam class. This class is used to create the laser beam for the game.
 """
 
 import pygame

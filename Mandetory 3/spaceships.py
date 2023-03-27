@@ -1,5 +1,9 @@
 """ 
 Writen by: Trym Varland
+
+module:: spaceships.py
+    This module contains the Spaceships class. This class is used to create the spaceship for the game. 
+    It also stores the spaceship's attributes and methods. 
 """
 import pygame
 from config import *

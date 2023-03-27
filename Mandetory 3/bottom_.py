@@ -1,6 +1,9 @@
 """ 
 This is made mostly for fun, so alot (almost everything) of the code is from:
 https://github.com/baraltech/Menu-System-PyGame/blob/551c6f3262cdb0d91b0803fa4a1beb8136c90bc1/main.py#L40
+
+module:: bottom_.py
+    This module contains the Bottom class. This class is used to create buttons for the game. 
 """
 
 class Bottom:

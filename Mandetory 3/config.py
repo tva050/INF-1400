@@ -1,6 +1,10 @@
 """ 
 Writen by: Trym Varland
+
+module::  config.py
+    This module contains the configuration of the game.
 """
+
 import pygame, sys
 import numpy as np
 from pygame import Vector2 as Vec2
