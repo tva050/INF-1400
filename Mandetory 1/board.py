@@ -15,3 +15,4 @@ class Board:
             r = r[:-2] + "]" + "\n ["
         r = r[:-3] + "]"
         return r
+    
