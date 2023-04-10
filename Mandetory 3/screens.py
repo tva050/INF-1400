@@ -8,7 +8,7 @@ module:: screens.py
 
 import pygame, sys
 from config import *
-from buttom import Buttom
+from button import Button
 from game import Game
 
 class Screens:
@@ -52,7 +52,7 @@ class Screens:
                     pygame.quit() # Quits the game
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN: # Checks if the mouse is clicked
-                    if back_buttom.check_for_input(info_mouse_pos): # Checks if the back button is clicked go back to the main manu
+                    if back_button.check_for_input(info_mouse_pos): # Checks if the back button is clicked go back to the main manu
                         self.main_manu(Screens)
             
             # Draws the info screen            
@@ -64,8 +64,8 @@ class Screens:
             
             point_info = SCREEN.blit(POINT_INFO, (SCREEN_WIDTH/2-110, SCREEN_HEIGHT/2+30))
             
-            back_buttom = Buttom(BACK_BUTTOM, (SCREEN_WIDTH/2, SCREEN_HEIGHT/2+250))
-            back_buttom.draw(SCREEN)
+            back_button = Button(BACK_BUTTON, (SCREEN_WIDTH/2, SCREEN_HEIGHT/2+250))
+            back_button.draw(SCREEN)
 
             pygame.display.update()
 
@@ -89,11 +89,11 @@ class Screens:
             SCREEN.blit(menu_img, menu_rect)
             
             # Creates the buttons
-            play_buttom = Buttom(PLAY_BUTTOM, (SCREEN_WIDTH/2, SCREEN_HEIGHT/2-50))
-            info_buttom = Buttom(INFO_BUTTOM, (SCREEN_WIDTH/2, SCREEN_HEIGHT/2+50))
+            play_button = Button(PLAY_BUTTON, (SCREEN_WIDTH/2, SCREEN_HEIGHT/2-50))
+            info_button = Button(INFO_BUTTON, (SCREEN_WIDTH/2, SCREEN_HEIGHT/2+50))
             
             
-            for button in [play_buttom, info_buttom]: # Draws the buttons
+            for button in [play_button, info_button]: # Draws the buttons
                 button.draw(SCREEN)
                 
             for event in pygame.event.get():
@@ -101,9 +101,9 @@ class Screens:
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if play_buttom.check_for_input(menu_mouse_pos): # Checks if the play button is clicked and starts the game
+                    if play_button.check_for_input(menu_mouse_pos): # Checks if the play button is clicked and starts the game
                         Game().game_loop()
-                    if info_buttom.check_for_input(menu_mouse_pos): # Checks if the info button is clicked and goes to the info screen
+                    if info_button.check_for_input(menu_mouse_pos): # Checks if the info button is clicked and goes to the info screen
                         self.info(Screens)
                         
             pygame.display.update()
