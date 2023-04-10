@@ -82,13 +82,13 @@ WON_PANEL_POS = (SCREEN_WIDTH/2-GREEN_WON.get_width()/2, SCREEN_HEIGHT/2-GREEN_W
 # MAIN MENU
 
 MAYHEM      = pygame.image.load(os.path.join("assets", "mayham_start.png")).convert_alpha()
-PLAY_BOTTOM = pygame.image.load(os.path.join("assets", "play_bottom.png")).convert_alpha()
-INFO_BOTTOM = pygame.image.load(os.path.join("assets", "info_bottom.png")).convert_alpha()
+PLAY_BUTTOM = pygame.image.load(os.path.join("assets", "play_bottom.png")).convert_alpha()
+INFO_BUTTOM = pygame.image.load(os.path.join("assets", "info_bottom.png")).convert_alpha()
 
 GREEN_CONTROLS  = pygame.image.load(os.path.join("assets", "green_controls.png")).convert_alpha()
 PURPLE_CONTROLS = pygame.image.load(os.path.join("assets", "purple_controls.png")).convert_alpha()
-BACK_BOTTOM     = pygame.image.load(os.path.join("assets", "back_bottom.png")).convert_alpha()
-BACK_BOTTOM     = pygame.transform.scale(BACK_BOTTOM, (BACK_BOTTOM.get_width()//2, BACK_BOTTOM.get_height()//2)).convert_alpha()
+BACK_BUTTOM     = pygame.image.load(os.path.join("assets", "back_bottom.png")).convert_alpha()
+BACK_BUTTOM     = pygame.transform.scale(BACK_BUTTOM, (BACK_BUTTOM.get_width()//2, BACK_BUTTOM.get_height()//2)).convert_alpha()
 POINT_INFO      = pygame.image.load(os.path.join("assets", "point_info.png")).convert_alpha()
 
 # Settings

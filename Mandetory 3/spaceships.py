@@ -118,7 +118,7 @@ class Spaceships(pygame.sprite.Sprite):
         self.angle -= np.degrees(ROTATION_SPEED) # Rotate the spaceship
         rotate_image = pygame.transform.rotate(image, self.angle) # Rotate the image
         rotate_rec = rotate_image.get_rect(center = self.rect.center) # Rotate the rectangle
-        return rotate_image, rotate_rec
+        return rotate_image, rotate_rec # Return the rotated image and rectangle
     
     def move_left(self, image):
         """ 
