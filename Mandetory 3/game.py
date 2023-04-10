@@ -264,7 +264,7 @@ class Game:
         ----------
             None
         """
-        if self.player1_spaceship.score == 5: # If the score of player 1 is 1 then draw the green won panel and reset the game
+        if self.player1_spaceship.score == 5: # If the score of player 1 is 5 then draw the green won panel and reset the game
             SCREEN.blit(GREEN_WON, (WON_PANEL_POS))
             self.reset_handler()
         elif self.player2_spaceship.score == 5:
