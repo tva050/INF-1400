@@ -6,7 +6,7 @@ module:: bottom_.py
     This module contains the Bottom class. This class is used to create buttons for the game. 
 """
 
-class Buttom:
+class Button:
     """ 
     This class is used to create buttons for the game.
     
