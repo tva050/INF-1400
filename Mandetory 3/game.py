@@ -105,7 +105,6 @@ class Game:
             obstacle = Obstacles(OBSTACLE_IMG, OBSTACLE_POSITIONS[positions])
             self.obstacle_group.add(obstacle)
         
-        # Player 1 controls
     def event_handler(self):
         """
         The event handler of the game.
@@ -138,7 +137,7 @@ class Game:
         if keys[pygame.K_UP] == False:
             self.player2_spaceship.image = pygame.transform.rotate(PLAYER2_IMG_LOADED, self.player2_spaceship.angle)
             
-        # Shoot
+
     def shootkeys(self, spaceship):
         """ 
         The keys for shooting.

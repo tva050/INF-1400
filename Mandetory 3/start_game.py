@@ -7,9 +7,9 @@ module:: start_game.py
 from screens import Screens
 
 
-if __name__ == "__main__":
+if __name__ == "__main__": 
     """ 
-    
+    Starts the game.
     """
     start = Screens.main_manu(Screens)
     
