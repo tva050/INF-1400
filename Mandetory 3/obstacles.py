@@ -43,7 +43,7 @@ class Obstacles(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.image.load(image)
         self.image = pygame.transform.scale(self.image, OBSTACLE_SIZE).convert_alpha()
-        self.mask = pygame.mask.from_surface(self.image)
+        self.mask = pygame.mask.from_surface(self.image) # Mask of the image, used for collision detection
         
         self.rect = self.image.get_rect()
         self.rect.center = [position[0], position[1]]

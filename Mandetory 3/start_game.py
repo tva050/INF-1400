@@ -11,7 +11,8 @@ import cProfile
 if __name__ == "__main__": 
     """ 
     Starts the game.
+    
+    cProfile.run('start = Screens.main_manu(Screens)') # Used to profile the game
     """
-    cProfile.run('start = Screens.main_manu(Screens)')
     start = Screens.main_manu(Screens)
     

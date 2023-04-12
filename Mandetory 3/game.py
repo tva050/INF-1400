@@ -171,7 +171,7 @@ class Game:
         ----------
             None
         """
-        if pygame.sprite.spritecollide(self.player1_spaceship, self.player2_spaceship.beams, True):
+        if pygame.sprite.spritecollide(self.player1_spaceship, self.player2_spaceship.beams, True): 
             self.player2_spaceship.score += 1 # Add 1 to the score of player 2
         if pygame.sprite.spritecollide(self.player2_spaceship, self.player1_spaceship.beams, True):
             self.player1_spaceship.score += 1 

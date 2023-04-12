@@ -52,11 +52,11 @@ class LaserBeam(pygame.sprite.Sprite):
         self.image = pygame.image.load(image)
         self.image = pygame.transform.scale(self.image, (41, 11)).convert_alpha()
         self.mask = pygame.mask.from_surface(self.image)
-        self.velocity = BEAM_VELOCITY
+        self.velocity = BEAM_VELOCITY 
     
-        self.position = Vec2(position)
-        self.speed = Vec2(0, 0)
-        self.angle = angle
+        self.position = Vec2(position) # Position of the laser beam
+        self.speed = Vec2(0, 0) # Speed of the laser beam
+        self.angle = angle # Angle of the laser beam
         
         self.rect = self.image.get_rect(center = (self.position.x, self.position.y))
         

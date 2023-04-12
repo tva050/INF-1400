@@ -19,7 +19,7 @@ SCREEN_HEIGHT = 600
 FPS = 60 # Frames per second
 
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0)
-FONT = pygame.font.Font(os.path.join("assets", "OriginTech personal use.ttf"), 40)
+FONT = pygame.font.Font(os.path.join("assets", "OriginTech personal use.ttf"), 40) # Font for the text in the game
 
 
 # Background
@@ -75,21 +75,21 @@ SCORE_PANEL     = pygame.image.load(os.path.join("assets", "score_panel.png")) #
 SCORE_PANEL     = pygame.transform.scale(SCORE_PANEL, (820/4, 280/5)).convert_alpha()
 SCORE_PANEL_POS = (SCREEN_WIDTH/2-SCORE_PANEL.get_width()/2, 0)
 
-GREEN_WON     = pygame.image.load(os.path.join("assets", "green_wins.png"))
+GREEN_WON     = pygame.image.load(os.path.join("assets", "green_wins.png")) # Path to the image of the won panel
 PURPLE_WON    = pygame.image.load(os.path.join("assets", "purple_wins.png"))
 WON_PANEL_POS = (SCREEN_WIDTH/2-GREEN_WON.get_width()/2, SCREEN_HEIGHT/2-GREEN_WON.get_height()/2)
 
 # MAIN MENU
 
-MAYHEM      = pygame.image.load(os.path.join("assets", "mayham_start.png")).convert_alpha()
-PLAY_BUTTON = pygame.image.load(os.path.join("assets", "play_bottom.png")).convert_alpha()
-INFO_BUTTON = pygame.image.load(os.path.join("assets", "info_bottom.png")).convert_alpha()
+MAYHEM      = pygame.image.load(os.path.join("assets", "mayham_start.png")).convert_alpha() # Game title image in main menu
+PLAY_BUTTON = pygame.image.load(os.path.join("assets", "play_bottom.png")).convert_alpha() # Play button in main menu
+INFO_BUTTON = pygame.image.load(os.path.join("assets", "info_bottom.png")).convert_alpha() # Info button in main menu
 
-GREEN_CONTROLS  = pygame.image.load(os.path.join("assets", "green_controls.png")).convert_alpha()
+GREEN_CONTROLS  = pygame.image.load(os.path.join("assets", "green_controls.png")).convert_alpha() # Image with description of the controls
 PURPLE_CONTROLS = pygame.image.load(os.path.join("assets", "purple_controls.png")).convert_alpha()
 BACK_BUTTON     = pygame.image.load(os.path.join("assets", "back_bottom.png")).convert_alpha()
 BACK_BUTTON     = pygame.transform.scale(BACK_BUTTON, (BACK_BUTTON.get_width()//2, BACK_BUTTON.get_height()//2)).convert_alpha()
-POINT_INFO      = pygame.image.load(os.path.join("assets", "point_info.png")).convert_alpha()
+POINT_INFO      = pygame.image.load(os.path.join("assets", "point_info.png")).convert_alpha() # Image with description of the points
 
 # Settings
 GRAVITY = FPS/5000 # Gravity of the game
