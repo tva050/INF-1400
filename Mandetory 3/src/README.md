@@ -6,4 +6,4 @@ Click on the shown buttons in the main menu screen with the mousepad, to do any 
 
 Buttons shown in the main menu:
 - Play: Starts the game
-- Info: all necessary info about the game and how to play
+- Info: All necessary info about the game and how to play
